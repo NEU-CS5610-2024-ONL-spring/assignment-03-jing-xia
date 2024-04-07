@@ -3,6 +3,7 @@ import * as ReactDOMClient from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NotFound from "./components/NotFound";
 import Home from "./components/Home";
+import VerifyUser from "./components/VerifyUser";
 import { Auth0Provider } from "@auth0/auth0-react";
 import { AuthTokenProvider } from "./AuthTokenContext";
 
@@ -26,6 +27,7 @@ root.render(
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/verify-user" element={<VerifyUser />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

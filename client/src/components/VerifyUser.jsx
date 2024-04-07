@@ -1,4 +1,4 @@
-import "../style/appLayout.css";
+// import "../style/appLayout.css";
 
 import { useEffect } from "react";
 import { useAuthToken } from "../AuthTokenContext";
@@ -22,7 +22,8 @@ export default function VerifyUser() {
       const user = await data.json();
 
       if (user.auth0Id) {
-        navigate("/app");
+        // navigate("/app");
+        navigate("/");
       }
     }
 
