@@ -2,7 +2,7 @@ import React from "react";
 import * as ReactDOMClient from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NotFound from "./components/NotFound";
-import Home from "./components/Home";
+import Home from "./components/Home/Home";
 import VerifyUser from "./components/VerifyUser";
 import { Auth0Provider } from "@auth0/auth0-react";
 import { AuthTokenProvider } from "./AuthTokenContext";
