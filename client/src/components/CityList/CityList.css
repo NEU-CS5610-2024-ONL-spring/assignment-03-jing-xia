@@ -1,0 +1,7 @@
+.city-list-container {
+  background-color: rgba(252, 252, 252, 0.9);
+  border-radius: 20px;
+  width: 80%;
+  height: 100%;
+  margin: 40px auto;
+}

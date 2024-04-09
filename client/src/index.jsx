@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NotFound from "./components/NotFound";
 import Home from "./components/Home/Home";
 import VerifyUser from "./components/VerifyUser";
+import UserProfile from "./components/UserProfile/UserProfile"
 import { Auth0Provider } from "@auth0/auth0-react";
 import { AuthTokenProvider } from "./AuthTokenContext";
 import { ConfigProvider } from 'antd';
@@ -42,8 +43,9 @@ root.render(
             }}
           >
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/home/*" element={<Home />} />
               <Route path="/verify-user" element={<VerifyUser />} />
+              <Route path="/user-profile" element={<UserProfile />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </ConfigProvider>

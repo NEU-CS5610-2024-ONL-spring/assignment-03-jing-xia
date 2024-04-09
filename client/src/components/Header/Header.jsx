@@ -10,15 +10,15 @@ export default function Header() {
   const { loginWithRedirect } = useAuth0();
 
   return (
-    <div>
-      <h1>Weather Forecast</h1>
-      <div className='container'>
+    <div className='container'>
+      <h1 className='header-top'>Weather Forecast</h1>
+      <div className='header-bottom'>
         <Search
-          className='header-left'
+          className='header-bottom-left'
           placeholder="Search by city name"
           // onSearch={onSearch}
         />
-        <div className='header-right'>
+        <div className='header-bottom-right'>
           <Select 
             defaultValue = '℃'
             options = {[

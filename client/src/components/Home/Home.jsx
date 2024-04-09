@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import CityList from "../CityList/CityList";
+import Detail from "../Detail/Detail";
 import "./Home.css";
 
 export default function Home() {
@@ -10,10 +11,13 @@ export default function Home() {
       <Header />
       <div className="main">
         <Routes>
-          <Route path="/citylist" element={CityList}/>
+          <Route path="/*" element={<CityList />}/>
+          <Route path="/detail" element={<Detail />}/>
         </Routes>
       </div>
-      <Footer />
+      <div className="footer">
+        <Footer />
+      </div>
     </div>
   );
 }
