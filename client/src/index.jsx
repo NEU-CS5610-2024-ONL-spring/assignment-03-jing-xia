@@ -6,6 +6,7 @@ import Home from "./components/Home/Home";
 import VerifyUser from "./components/VerifyUser";
 import { Auth0Provider } from "@auth0/auth0-react";
 import { AuthTokenProvider } from "./AuthTokenContext";
+import { ConfigProvider } from 'antd';
 
 const container = document.getElementById("root");
 const root = ReactDOMClient.createRoot(container);
@@ -25,11 +26,27 @@ root.render(
     >
       <AuthTokenProvider>
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/verify-user" element={<VerifyUser />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <ConfigProvider
+            theme={{
+              token: {
+                colorBgContainer: 'aliceblue',
+              },
+              components: {
+                Select: {
+                  selectorBg:'aliceblue'
+                },
+                // Input: {
+                //   activeBg: 'aliceblue'
+                // }
+              },
+            }}
+          >
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/verify-user" element={<VerifyUser />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </ConfigProvider>
         </BrowserRouter>
       </AuthTokenProvider>
     </Auth0Provider>
