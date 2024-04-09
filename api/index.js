@@ -37,7 +37,7 @@ app.post("/verify-user", requireAuth, async (req, res) => {
   const auth0Id = req.auth.payload.sub;
   const email = req.auth.payload[`${process.env.AUTH0_AUDIENCE}/email`];
   const name = req.auth.payload[`${process.env.AUTH0_AUDIENCE}/name`];
-
+  // console.log("email", email);
   // test verify user return auth0Id
   res.json({ auth0Id });
 
