@@ -17,7 +17,7 @@ model User {
   id           Int      @id @default(autoincrement())
   email        String   @unique
   auth0Id      String   @unique @default("")
-  name     String?
+  name         String?
   weatherUnit  Int      @default(0)
   allowLocate  Int      @default(0)
   cities       CityList[]    
@@ -26,9 +26,10 @@ model User {
 model City {
   id           Int      @id @default(autoincrement())
   name         String
-  locationKey  String   @unique
-  Latitude     Float
-  Longitude    Float
+  latitude     Float
+  longitude    Float
+  country      String
+  state        String
   users        CityList[]
 }
 
