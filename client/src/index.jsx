@@ -8,6 +8,7 @@ import UserProfile from "./components/UserProfile/UserProfile"
 import { Auth0Provider } from "@auth0/auth0-react";
 import { AuthTokenProvider } from "./AuthTokenContext";
 import { ConfigProvider } from 'antd';
+import RequireAuth from "./components/RequireAuth";
 
 const container = document.getElementById("root");
 const root = ReactDOMClient.createRoot(container);
@@ -43,9 +44,10 @@ root.render(
             }}
           >
             <Routes>
+              <Route path="/*" element={<Home />} />
               <Route path="/home/*" element={<Home />} />
               <Route path="/verify-user" element={<VerifyUser />} />
-              <Route path="/user-profile" element={<UserProfile />} />
+              <Route path="/profile" element={<RequireAuth><UserProfile /></RequireAuth>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </ConfigProvider>

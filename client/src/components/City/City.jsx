@@ -17,6 +17,7 @@ export default function City({city}) {
     <Card
       title={title}
       extra={<a href="#">More</a>}
+      style={{marginBottom:'10px'}}
     >
       <p>Card content</p>
       <p>Card content</p>

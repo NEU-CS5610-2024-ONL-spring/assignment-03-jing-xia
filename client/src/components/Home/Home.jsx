@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import RequireAuth from "../RequireAuth";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import CityList from "../CityList/CityList";
@@ -12,7 +13,7 @@ export default function Home() {
       <div className="main">
         <Routes>
           <Route path="/*" element={<CityList />}/>
-          <Route path="/detail" element={<Detail />}/>
+          <Route path="/detail" element={<RequireAuth><Detail /></RequireAuth>}/>
         </Routes>
       </div>
       <div className="footer">

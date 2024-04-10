@@ -23,7 +23,7 @@ export default function VerifyUser() {
 
       if (user.auth0Id) {
         // navigate("/app");
-        navigate("/user-profile");
+        navigate("/home");
       }
     }
 
