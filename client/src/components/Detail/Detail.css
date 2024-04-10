@@ -1,0 +1,8 @@
+.detail-menu {
+  background-color: rgb(5, 4, 29);
+  justify-content: center;
+}
+.detail-content {
+  margin: 20px auto;
+  width: 60%;
+}

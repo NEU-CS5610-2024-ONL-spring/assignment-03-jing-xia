@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Card } from 'antd';
 
 export default function City({city}) {
@@ -16,7 +17,13 @@ export default function City({city}) {
   return (
     <Card
       title={title}
-      extra={<a href="#">More</a>}
+      extra={
+      <Link 
+        to='/detail'
+        state={{"cityName":city.name}}
+      >
+        More
+      </Link>}
       style={{marginBottom:'10px'}}
     >
       <p>Card content</p>
