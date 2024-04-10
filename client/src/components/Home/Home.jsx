@@ -13,7 +13,7 @@ export default function Home() {
       <div className="main">
         <Routes>
           <Route path="/*" element={<CityList />}/>
-          <Route path="/detail" element={<RequireAuth><Detail /></RequireAuth>}/>
+          <Route path="/detail/*" element={<RequireAuth><Detail /></RequireAuth>}/>
         </Routes>
       </div>
       <div className="footer">

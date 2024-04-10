@@ -37,9 +37,10 @@ root.render(
                 Select: {
                   selectorBg:'aliceblue'
                 },
-                // Input: {
-                //   activeBg: 'aliceblue'
-                // }
+                Menu: {
+                  itemColor: 'white',
+                  itemHoverColor: '#1677ff',
+                }
               },
             }}
           >
