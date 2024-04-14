@@ -41,14 +41,14 @@ export default function Header() {
         />
         <div className='header-bottom-right'>
           <Select 
-            defaultValue = '℃'
+            defaultValue = 'imperial'
             options = {[
               {
-                value:'℃',
+                value:'metric',
                 label:'℃'
               },
               {
-                value:'℉',
+                value:'imperial',
                 label:'℉'
               }
             ]}
