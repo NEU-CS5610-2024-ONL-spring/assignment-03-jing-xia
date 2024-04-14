@@ -1,25 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Collapse, Card, Button, Avatar, List } from 'antd';
 import { HomeOutlined, AntDesignOutlined } from '@ant-design/icons';
+import { useAuthToken } from "../../AuthTokenContext";
 import './UserProfile.css'
 
 export default function UserProfile() {
   const navigate = useNavigate();
+  const { accessToken } = useAuthToken();
+  const [ user, setUser ] = useState({name:"Loading", email: "Loading", allowLocate: 0});
+  const [ cityList, setCityList ] = useState(["Loading"]);
   const text = `
     A dog is a type of domesticated animal.
     Known for its loyalty and faithfulness,
     it can be found as a welcome guest in many households across the world.
   `;
-  const subscribedCityList = [
-    'Racing car sprays burning fuel into crowd.',
-    'Japanese princess to wed commoner.',
-    'Australian walks 100km after outback crash.',
-    'Man charged over missing wedding girl.',
-    'Los Angeles battles huge wildfires.',
-    'Los Angeles battles huge wildfires.',
-    'Los Angeles battles huge wildfires.',
-  ];
   const settings = [
     "Access to my location",
   ];
@@ -29,7 +24,7 @@ export default function UserProfile() {
       label: 'Subscribed City List',
       children: (
         <List
-          dataSource={subscribedCityList}
+          dataSource={cityList}
           renderItem={
             (item) => {
               return (
@@ -53,7 +48,7 @@ export default function UserProfile() {
             (item) => {
               return (
               <List.Item 
-                actions={[<a key="list-disable">Disable</a>]}
+                actions={[<a key="list-disable">{user.allowLocate ? "Disable" : "Enable"}</a>]}
               >
                 {item}
               </List.Item>)
@@ -63,6 +58,44 @@ export default function UserProfile() {
       ),
     },
   ];
+
+  const getUserInfo = async() => {
+    if(!accessToken){
+      return;
+    }
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/user/profile`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      }
+    });
+    if(response.ok){
+      const user = await response.json();
+      setUser(user);
+    }
+  }
+
+  const getSubscribedCityList = async() => {
+    if(!accessToken){
+      return;
+    }
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/user/cityList`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      }
+    });
+    if(response.ok){
+      const cityList = await response.json();
+      setCityList(cityList);
+    }
+  }
+
+  useEffect(()=>{
+    getUserInfo();
+    getSubscribedCityList();
+  },[accessToken]);
+
   return (
     <div className='profile-container'>
       <div className='profile-header'>
@@ -91,10 +124,10 @@ export default function UserProfile() {
             src="https://dthezntil550i.cloudfront.net/p4/latest/p42102052243097410008650553/1280_960/12bc8bc0-2186-48fb-b432-6c011a559ec0.png"
           />
           <h1>
-            Cathenax
+            {user.name}
           </h1>
           <p>
-            siyuan20011205@163.com
+            {user.email}
           </p>
         </div>
         <Collapse items={collapseItems} defaultActiveKey={['1']} />
