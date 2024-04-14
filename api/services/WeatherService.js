@@ -53,8 +53,9 @@ export async function getCurrentForecast(latitude, longitude, unit="imperial") {
 export async function getWeatherByCities(names, unit="imperial") {
   const weathers = names.map(async (name) => {
     const location = await getLocationByCity(name);
-    const weathers = getCurrentForecast(location.latitude, location.longitude, unit);
-    return weathers;
+    const weather = await getCurrentForecast(location.latitude, location.longitude, unit);
+    weather.city = location;
+    return weather;
   });
   return Promise.all(weathers);
 }

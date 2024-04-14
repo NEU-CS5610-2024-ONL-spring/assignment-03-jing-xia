@@ -141,8 +141,8 @@ app.post("/user/addCity", async (req, res) => {
   if(!cityList){
     return res.status(500).send("Failed to add city to the user's city list");
   };
-  console.log("🧍 add city: ", city);
-  res.json(city);
+  console.log("🧍 add cityList: ", cityList);
+  res.json(cityList);
 });
 
 /**
@@ -217,10 +217,10 @@ app.put("/user/locate", async (req, res) => {
  * url: /user/profile
  * This endpoint is used to get the user infomation
  */
-// app.get("/user/profile", requireAuth, async (req, res) => {
-app.get("/user/profile", async (req, res) => {
-  //const auth0Id = req.auth.payload.sub;
-  const auth0Id = "auth0|661201489fbd80a7b65838e5";
+app.get("/user/profile", requireAuth, async (req, res) => {
+// app.get("/user/profile", async (req, res) => {
+  const auth0Id = req.auth.payload.sub;
+  // const auth0Id = "auth0|661201489fbd80a7b65838e5";
   const user = await prisma.user.findUnique({
     where: {
       auth0Id,
