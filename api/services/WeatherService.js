@@ -14,11 +14,29 @@ export async function getLocationByCity(name) {
     name: location[0].name,
     latitude: location[0].lat,
     longitude: location[0].lon,
-    contry: location[0].country,
+    country: location[0].country,
     state: location[0].state,
   }
   console.log("☀️ city geo:", city);
   return city;
+}
+// OPENWEATHER, get mutiple locations info by city name 
+export async function getLocationsByCityName(name) {
+  const res = await fetch(
+    `${process.env.OPENWEATHER_GEOCODING}?appid=${process.env.OPENWEATHER_API_KEY}&q=${name}&limit=5`);
+  const locations = await res.json();
+  console.log("☀️ get mutiple locations by city name: ", locations);
+  const cities = locations.map((location) => {
+    return {
+      name: location.name,
+      latitude: location.lat,
+      longitude: location.lon,
+      country: location.country,
+      state: location.state,
+    }
+  });
+  console.log("☀️ cities geo:", cities);
+  return cities;
 }
 
 // get current condition of city by key, 
@@ -31,6 +49,7 @@ export async function getCurrentForecast(latitude, longitude, unit="imperial") {
   return forecast;
 }
 
+// get weathers' of multiple cities by names
 export async function getWeatherByCities(names, unit="imperial") {
   const weathers = names.map(async (name) => {
     const location = await getLocationByCity(name);
@@ -38,6 +57,24 @@ export async function getWeatherByCities(names, unit="imperial") {
     return weathers;
   });
   return Promise.all(weathers);
+}
+
+// get 48 hours' hourly forecast by location
+export async function getHourlyForecast(latitude, longitude, unit="imperial") {
+  const res = await fetch(
+    `${process.env.OPENWEATHER_CURRENT_FORECAST}?apikey=${process.env.OPENWEATHER_API_KEY}&lat=${latitude}&lon=${longitude}&units=${unit}&exclude=minutely,daily`);
+  const forecast = await res.json();
+  console.log("☀️ get hourly forecast by location: ");
+  return forecast;
+}
+
+// get 8 days' daily forecast by location
+export async function getDailyForecast(latitude, longitude, unit="imperial") {
+  const res = await fetch(
+    `${process.env.OPENWEATHER_CURRENT_FORECAST}?apikey=${process.env.OPENWEATHER_API_KEY}&lat=${latitude}&lon=${longitude}&units=${unit}&exclude=minutely,hourly`);
+  const forecast = await res.json();
+  console.log("☀️ get daily forecast by location: ");
+  return forecast;
 }
 
 // getLocationByCity("New York");

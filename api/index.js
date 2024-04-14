@@ -4,7 +4,7 @@ import pkg from "@prisma/client";
 import morgan from "morgan";
 import cors from "cors";
 import { auth } from "express-oauth2-jwt-bearer";
-import { getCurrentForecast, getLocationByCity, getWeatherByCities } from "./services/WeatherService.js";
+import { getCurrentForecast, getDailyForecast, getHourlyForecast, getLocationByCity, getLocationsByCityName, getWeatherByCities } from "./services/WeatherService.js";
 
 dotenv.config();
 
@@ -89,31 +89,37 @@ app.get("/user/cityList", async (req, res) => {
 
 /**
  * url:   /user/addCity
+ * params: body = {name, latitude, longitude, country, state}
  * This endpoint is used to add a city to the user's city list
  */
 //app.post("/user/addCity", requireAuth, async (req, res) => {
 app.post("/user/addCity", async (req, res) => {
   //const auth0Id = req.auth.payload.sub;
   const auth0Id = "auth0|661201489fbd80a7b65838e5";
-  const { name, latitude, longitude, contry, state } = req.body;
+  const { name, latitude, longitude, country, state } = req.body;
+  if(!name || !latitude || !longitude || !country || !state){
+    return res.status(400).send("City's information is required");
+  }
   const user = await prisma.user.findUnique({
     where: {
       auth0Id,
     },
   });
+  // check if city already exists in the database, if not then create it
   let city = await prisma.city.findFirst({
     where:{
       latitude: latitude,
       longitude: longitude,
     }
   });
+  // create city if not exists
   if(!city){
     city = await prisma.city.create({
       data:{
         name: name,
         latitude: latitude,
         longitude: longitude,
-        country: contry,
+        country: country,
         state: state,
       },
     });
@@ -130,9 +136,98 @@ app.post("/user/addCity", async (req, res) => {
           id: city.id,
         }
       },
-    },});
-  console.log("🏛️ add city: ", city);
+    },
+  });
+  if(!cityList){
+    return res.status(500).send("Failed to add city to the user's city list");
+  };
+  console.log("🧍 add city: ", city);
   res.json(city);
+});
+
+/**
+ * url: /user/removeCity?cityId=1
+ * params: cityId
+ * This endpoint is used to remove a city from the user's city list
+ */
+// app.delete("/user/removeCity", requireAuth, async (req, res) => {
+app.delete("/user/removeCity", async (req, res) => {
+  // const auth0Id = req.auth.payload.sub;
+  const auth0Id = "auth0|661201489fbd80a7b65838e5";
+  const cityId = req.query.cityId;
+  if(!cityId){
+    // res.status(400).send("id query param is required");
+    return res.status(400).send("id query param is required");
+  }
+  const city = await prisma.city.findUnique({
+    where: {
+      id: parseInt(cityId),
+    },
+  });
+  if(!city){
+    return res.status(404).send("Invalid city id");
+  }
+  const user = await prisma.user.findUnique({
+    where: {
+      auth0Id,
+    },
+  });
+  const cityList = await prisma.cityList.delete({
+    where: {
+      userId_cityId: {
+        userId: user.id,
+        cityId: parseInt(cityId),
+      }
+    }
+  });
+  if(!cityList){
+    res.status(404).send("City not found");
+  }
+  console.log("🧍 remove city: ", cityList);
+  res.status(200).send("OK");
+});
+
+/**
+ * url: /user/locate?allow=true
+ * params: allow
+ * This endpoint is used to update the allowLocation in user table
+ */
+// app.put("/user/locate", requireAuth, async (req, res) => {
+app.put("/user/locate", async (req, res) => {
+  // const auth0Id = req.auth.payload.sub;
+  const auth0Id = "auth0|661201489fbd80a7b65838e5";
+  const isAllowed = req.query.allow;
+  if(!isAllowed){
+    return res.status(400).send("allow query param is required");
+  }
+  const allow = isAllowed === "true" ? 1 : 0;
+  const user = await prisma.user.update({
+    where: {
+      auth0Id,
+    },
+    data: {
+      allowLocate: allow,
+    },
+  });
+  console.log("🧍 update allowLocation: ", user);
+  res.json(user);
+});
+
+/**
+ * url: /user/profile
+ * This endpoint is used to get the user infomation
+ */
+// app.get("/user/profile", requireAuth, async (req, res) => {
+app.get("/user/profile", async (req, res) => {
+  //const auth0Id = req.auth.payload.sub;
+  const auth0Id = "auth0|661201489fbd80a7b65838e5";
+  const user = await prisma.user.findUnique({
+    where: {
+      auth0Id,
+    },
+  });
+  console.log("🧍 get user profile: ", user);
+  res.json(user);
 });
 
 /**
@@ -141,34 +236,104 @@ app.post("/user/addCity", async (req, res) => {
  * This endpoint is used to get weathers of a list of cities by names
  */
 app.get("/weather/list", async (req, res) => {
-  const cityNames = req.query.cities.split(",");
-  if (!cityNames) {
-    res.status(400).send("cities query param is required");
-  } else {
-    const unit = req.query.unit || "imperial";
-    const weathers = await getWeatherByCities(cityNames, unit);
-    console.log("🌦️ get weathers by city names: ");
-    res.json(weathers);
+  if(!req.query.cities){
+    return res.status(400).send("cities query param is required");
   }
+  const cityNames = req.query.cities.split(",");
+  const unit = req.query.unit || "imperial";
+  const weathers = await getWeatherByCities(cityNames, unit);
+  console.log("🌦️ get weathers by city names: ");
+  res.json(weathers);
 });
 
 /**
- * url:     /weather/detail
+ * url:     /weather/detail?city_name=New York&unit=imperial
  * params:  city_name, unit
  */
 //app.get("/weather/detail", requireAuth, async (req, res) => {
+// app.get("/weather/detail", async (req, res) => {
+//   const cityName = req.query.city_name;
+//   if (!cityName) {
+//     res.status(400).send("city_name query param is required");
+//   } else {
+//     const unit = req.query.unit || "imperial";
+//     const weather = await getWeatherByCities([cityName], unit);
+//     console.log("🌦️ get weather detail by city name: ");
+//     res.json(weather);
+//   }
+// });
+
+/**
+ * url: /weather/detail?latitude=1&longitude=1&unit=imperial
+ * params: latitude, longitude, unit
+ * This endpoint is used to get weather detail by latitude and longitude
+ */
+// app.get("/weather/detail", requireAuth, async (req, res) => {
 app.get("/weather/detail", async (req, res) => {
-  const cityName = req.query.city_name;
-  if (!cityName) {
-    res.status(400).send("city_name query param is required");
+  if(!req.query.latitude || !req.query.longitude){
+    return res.status(400).send("latitude and longitude query params are required");
+  }
+  const latitude = req.query.latitude;
+  const longitude = req.query.longitude;
+  const unit = req.query.unit || "imperial";
+  const weather = await getCurrentForecast(latitude, longitude, unit);
+  console.log("🌦️ get weather detail by latitude and longitude: ");
+  res.json(weather);
+});
+
+/**
+ * url: /weather/detail/hourly?latitude=1&longitude=1&unit=imperial
+ * params: latitude, longitude, unit
+ * This endpoint is used to get 48 hours' hourly weather detail by latitude and longitude
+ */
+// app.get("/weather/detail/hourly", requireAuth, async (req, res) => {
+app.get("/weather/detail/hourly", async (req, res) => {
+  if(!req.query.latitude || !req.query.longitude){
+    return res.status(400).send("latitude and longitude query params are required");
+  }
+  const { latitude, longitude } = req.query;
+  if(!latitude || !longitude){
+    res.status(400).send("latitude and longitude query params are required");
   } else {
     const unit = req.query.unit || "imperial";
-    const weather = await getWeatherByCities([cityName], unit);
-    console.log("🌦️ get weather detail by city name: ");
+    const weather = await getHourlyForecast(latitude, longitude, unit);
+    console.log("🌦️ get hourly weather detail by latitude and longitude: ");
     res.json(weather);
   }
 });
 
+/**
+ * url: /weather/detail/daily?latitude=1&longitude=1&unit=imperial
+ * params: latitude, longitude, unit
+ * This endpoint is used to get 8 days' daily weather detail by latitude and longitude
+ */
+// app.get("/weather/detail/daily", requireAuth, async (req, res) => {
+app.get("/weather/detail/daily", async (req, res) => {
+  if(!req.query.latitude || !req.query.longitude){
+    return res.status(400).send("latitude and longitude query params are required");
+  }
+  const { latitude, longitude } = req.query;
+  const unit = req.query.unit || "imperial";
+  const weather = await getDailyForecast(latitude, longitude, unit);
+  console.log("🌦️ get daily weather detail by latitude and longitude: ");
+  res.json(weather);
+});
+
+/**
+ * url: /search?city=name
+ * params: city
+ * This endpoint is used to search a city by name
+ */
+app.get("/search", async (req, res) => {
+  if(!req.query.city){
+    return res.status(400).send("city query param is required");
+  }
+  const cityName = req.query.city;
+  const cities = await getLocationsByCityName(cityName);
+  console.log("🌦️ search cities by name: ");
+  res.json(cities);
+}); 
+
 app.listen(process.env.PORT, () => {
-  console.log("Server running on http://localhost:8000 🎉 🚀");
+  console.log(`Server running on http://localhost:${process.env.PORT} 🎉 🚀`);
 });
