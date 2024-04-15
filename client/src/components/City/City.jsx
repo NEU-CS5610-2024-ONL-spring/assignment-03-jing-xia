@@ -22,7 +22,7 @@ export default function City({city, weather, unit}) {
         <div>
           <Link 
             to='/detail'
-            state={{"cityName":city.name}}
+            state={{"city":city}}
             style={{marginRight:'10px'}}
           >
             More

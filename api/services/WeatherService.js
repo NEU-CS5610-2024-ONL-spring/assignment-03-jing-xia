@@ -39,17 +39,26 @@ export async function getLocationsByCityName(name) {
   return cities;
 }
 
-// get current condition of city by key, 
+// get full weather by latitude and longitude
+export async function getFullWeather(latitude, longitude, unit="imperial") {
+  const res = await fetch(
+    `${process.env.OPENWEATHER_CURRENT_FORECAST}?apikey=${process.env.OPENWEATHER_API_KEY}&lat=${latitude}&lon=${longitude}&units=${unit}`);
+  const forecast = await res.json();
+  console.log("☀️ get full weather by location: ");
+  return forecast;
+}
+
+// get current condition of city by latitude and longitude, 
 // unit: metric Celsius , imperial Fahrenheit , standard Kelvin 
 export async function getCurrentForecast(latitude, longitude, unit="imperial") {
   const res = await fetch(
-    `${process.env.OPENWEATHER_CURRENT_FORECAST}?apikey=${process.env.OPENWEATHER_API_KEY}&lat=${latitude}&lon=${longitude}&units=${unit}&exclude=minutely`);
+    `${process.env.OPENWEATHER_CURRENT_FORECAST}?apikey=${process.env.OPENWEATHER_API_KEY}&lat=${latitude}&lon=${longitude}&units=${unit}&exclude=minutely,hourly,daily`);
   const forecast = await res.json();
   console.log("☀️ get current forecast by location: ");
   return forecast;
 }
 
-// get weathers' of multiple cities by names
+// get current weathers' of multiple cities by names
 export async function getWeatherByCities(names, unit="imperial") {
   const weathers = names.map(async (name) => {
     const location = await getLocationByCity(name);
