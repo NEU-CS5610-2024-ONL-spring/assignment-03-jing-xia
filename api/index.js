@@ -4,7 +4,7 @@ import pkg from "@prisma/client";
 import morgan from "morgan";
 import cors from "cors";
 import { auth } from "express-oauth2-jwt-bearer";
-import { getCurrentForecast, getDailyForecast, getHourlyForecast, getLocationByCity, getLocationsByCityName, getWeatherByCities } from "./services/WeatherService.js";
+import { getCurrentForecast, getDailyForecast, getFullWeather, getHourlyForecast, getLocationByCity, getLocationsByCityName, getWeatherByCities } from "./services/WeatherService.js";
 
 dotenv.config();
 
@@ -34,6 +34,7 @@ app.get("/ping", (req, res) => {
 
 /**
  * url:   /verify-user
+ * return: user
  * This endpoint is used by the client to verify the user status 
  * and to make sure the user is registered in our database once they signup with Auth0
  * if not registered in our database we will create it.
@@ -66,6 +67,8 @@ app.post("/verify-user", requireAuth, async (req, res) => {
 
 /**
  * url:   /user/cityList
+ * params: cities
+ * return: city array
  * This endpoint is used to get the city list of the user
  */
 //app.get("/user/cityList", requireAuth, async (req, res) => {
@@ -90,11 +93,12 @@ app.get("/user/cityList", async (req, res) => {
 /**
  * url:   /user/addCity
  * params: body = {name, latitude, longitude, country, state}
+ * return: city object
  * This endpoint is used to add a city to the user's city list
  */
-//app.post("/user/addCity", requireAuth, async (req, res) => {
+// app.post("/user/addCity", requireAuth, async (req, res) => {
 app.post("/user/addCity", async (req, res) => {
-  //const auth0Id = req.auth.payload.sub;
+  // const auth0Id = req.auth.payload.sub;
   const auth0Id = "auth0|661201489fbd80a7b65838e5";
   const { name, latitude, longitude, country, state } = req.body;
   if(!name || !latitude || !longitude || !country || !state){
@@ -141,13 +145,14 @@ app.post("/user/addCity", async (req, res) => {
   if(!cityList){
     return res.status(500).send("Failed to add city to the user's city list");
   };
-  console.log("🧍 add cityList: ", cityList);
-  res.json(cityList);
+  console.log("🧍 add city: ", city);
+  res.json(city);
 });
 
 /**
  * url: /user/removeCity?cityId=1
  * params: cityId
+ * return: 200
  * This endpoint is used to remove a city from the user's city list
  */
 // app.delete("/user/removeCity", requireAuth, async (req, res) => {
@@ -159,37 +164,25 @@ app.delete("/user/removeCity", async (req, res) => {
     // res.status(400).send("id query param is required");
     return res.status(400).send("id query param is required");
   }
-  const city = await prisma.city.findUnique({
+  const cityList = await prisma.cityList.deleteMany({
     where: {
-      id: parseInt(cityId),
-    },
-  });
-  if(!city){
-    return res.status(404).send("Invalid city id");
-  }
-  const user = await prisma.user.findUnique({
-    where: {
-      auth0Id,
-    },
-  });
-  const cityList = await prisma.cityList.delete({
-    where: {
-      userId_cityId: {
-        userId: user.id,
-        cityId: parseInt(cityId),
-      }
+      user: {
+        auth0Id: auth0Id,
+      },
+      cityId: parseInt(cityId),
     }
   });
   if(!cityList){
     res.status(404).send("City not found");
   }
   console.log("🧍 remove city: ", cityList);
-  res.status(200).send("OK");
+  res.sendStatus(200);
 });
 
 /**
  * url: /user/locate?allow=true
  * params: allow
+ * return: user
  * This endpoint is used to update the allowLocation in user table
  */
 // app.put("/user/locate", requireAuth, async (req, res) => {
@@ -215,6 +208,7 @@ app.put("/user/locate", async (req, res) => {
 
 /**
  * url: /user/profile
+ * return: user
  * This endpoint is used to get the user infomation
  */
 app.get("/user/profile", requireAuth, async (req, res) => {
@@ -231,8 +225,48 @@ app.get("/user/profile", requireAuth, async (req, res) => {
 });
 
 /**
+ * url: /user/isSubscribe?latitude=1&longitude=1
+ * params: latitude, longitude
+ * return: true/false
+ * This endpoint is used to check if the user is subscribed to a city
+ */
+app.get("/user/isSubscribed", requireAuth, async (req, res) => {
+// app.get("/user/isSubscribed", async (req, res) => {
+  if(!req.query.latitude || !req.query.longitude){
+    return res.status(400).send("latitude and longitude query params are required");
+  }
+  const auth0Id = req.auth.payload.sub;
+  // const auth0Id = "auth0|661201489fbd80a7b65838e5";
+  const latitude = +req.query.latitude;
+  const longitude = +req.query.longitude;
+  
+  const city = await prisma.city.findFirst({
+    where:{
+      latitude: latitude,
+      longitude: longitude,
+    }
+  });
+  if(!city){
+    return res.json(false);
+  }
+  const cityList = await prisma.cityList.findFirst({
+    where: {
+      user: {
+        auth0Id: auth0Id,
+      },
+      cityId: city.id,
+    }
+  });
+  if(!cityList){
+    return res.json(false);
+  }
+  res.json(true);
+});
+
+/**
  * URL:     /weather/list
  * params:  cities, unit
+ * return:  weathers array
  * This endpoint is used to get weathers of a list of cities by names
  */
 app.get("/weather/list", async (req, res) => {
@@ -266,6 +300,7 @@ app.get("/weather/list", async (req, res) => {
 /**
  * url: /weather/detail?latitude=1&longitude=1&unit=imperial
  * params: latitude, longitude, unit
+ * return: weather object
  * This endpoint is used to get weather detail by latitude and longitude
  */
 // app.get("/weather/detail", requireAuth, async (req, res) => {
@@ -276,7 +311,7 @@ app.get("/weather/detail", async (req, res) => {
   const latitude = req.query.latitude;
   const longitude = req.query.longitude;
   const unit = req.query.unit || "imperial";
-  const weather = await getCurrentForecast(latitude, longitude, unit);
+  const weather = await getFullWeather(latitude, longitude, unit);
   console.log("🌦️ get weather detail by latitude and longitude: ");
   res.json(weather);
 });
@@ -284,6 +319,7 @@ app.get("/weather/detail", async (req, res) => {
 /**
  * url: /weather/detail/hourly?latitude=1&longitude=1&unit=imperial
  * params: latitude, longitude, unit
+ * return: weather object
  * This endpoint is used to get 48 hours' hourly weather detail by latitude and longitude
  */
 // app.get("/weather/detail/hourly", requireAuth, async (req, res) => {
@@ -292,19 +328,16 @@ app.get("/weather/detail/hourly", async (req, res) => {
     return res.status(400).send("latitude and longitude query params are required");
   }
   const { latitude, longitude } = req.query;
-  if(!latitude || !longitude){
-    res.status(400).send("latitude and longitude query params are required");
-  } else {
-    const unit = req.query.unit || "imperial";
-    const weather = await getHourlyForecast(latitude, longitude, unit);
-    console.log("🌦️ get hourly weather detail by latitude and longitude: ");
-    res.json(weather);
-  }
+  const unit = req.query.unit || "imperial";
+  const weather = await getHourlyForecast(latitude, longitude, unit);
+  console.log("🌦️ get hourly weather detail by latitude and longitude: ");
+  res.json(weather);
 });
 
 /**
  * url: /weather/detail/daily?latitude=1&longitude=1&unit=imperial
  * params: latitude, longitude, unit
+ * return: weather object
  * This endpoint is used to get 8 days' daily weather detail by latitude and longitude
  */
 // app.get("/weather/detail/daily", requireAuth, async (req, res) => {
@@ -322,6 +355,7 @@ app.get("/weather/detail/daily", async (req, res) => {
 /**
  * url: /search?city=name
  * params: city
+ * return: city array
  * This endpoint is used to search a city by name
  */
 app.get("/search", async (req, res) => {

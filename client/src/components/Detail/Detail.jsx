@@ -5,6 +5,7 @@ import Hourly from '../Hourly/Hourly';
 import SevenDays from '../SevenDays/SevenDays';
 import Monthly from '../Monthly/Monthly';
 import './Detail.css';
+import DetailHeader from './DetailHeader';
 
 export default function Detail() {
   // cityName is passed by using state object in the <Link> component
@@ -38,7 +39,7 @@ export default function Detail() {
           to='/detail/seven-days'
           state={location.state}
         >
-          Seven Days
+          Eight Days
         </Link>
       ),
       key: 'seven-days',
@@ -72,6 +73,7 @@ export default function Detail() {
         items={items}
       />
       <Card className='detail-content'>
+        <DetailHeader city={location.state}/>
         <Routes>
           <Route path='/hourly' element={<Hourly />}/>
           <Route path='/seven-days' element={<SevenDays />}/>
