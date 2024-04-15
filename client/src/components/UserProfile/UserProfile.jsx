@@ -10,11 +10,7 @@ export default function UserProfile() {
   const { accessToken } = useAuthToken();
   const [ user, setUser ] = useState({name:"Loading", email: "Loading", allowLocate: 0});
   const [ cityList, setCityList ] = useState(["Loading"]);
-  const text = `
-    A dog is a type of domesticated animal.
-    Known for its loyalty and faithfulness,
-    it can be found as a welcome guest in many households across the world.
-  `;
+
   const settings = [
     "Access to my location",
   ];
@@ -29,9 +25,9 @@ export default function UserProfile() {
             (item) => {
               return (
               <List.Item 
-                actions={[<a key="list-remove">Remove</a>]}
+                actions={[<a key="list-remove" onClick={() => {removeCity(item)}}>Remove</a>]}
               >
-                {item}
+                {item.name}
               </List.Item>)
             }
           }
@@ -48,7 +44,7 @@ export default function UserProfile() {
             (item) => {
               return (
               <List.Item 
-                actions={[<a key="list-disable">{user.allowLocate ? "Disable" : "Enable"}</a>]}
+                actions={[<a key="list-disable" onClick={()=>{allowLocate()}}>{user.allowLocate ? "Disable" : "Enable"}</a>]}
               >
                 {item}
               </List.Item>)
@@ -87,7 +83,42 @@ export default function UserProfile() {
     });
     if(response.ok){
       const cityList = await response.json();
+      console.log(cityList);
       setCityList(cityList);
+    }
+  }
+
+  const removeCity = async(city) => {
+    if(!accessToken){
+      return;
+    }
+    const fullUrl = `${process.env.REACT_APP_API_URL}/user/removeCity?cityId=${city.id}`;
+    const response = await fetch(fullUrl, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      }
+    });
+    if(response.ok){
+      getSubscribedCityList();
+    }
+  }
+
+  const allowLocate = async() => {
+    if(!accessToken){
+      return;
+    }
+    let allow = !user.allowLocate;
+    const fullUrl = `${process.env.REACT_APP_API_URL}/user/locate?allow=${allow}`;
+    const response = await fetch(fullUrl, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      }
+    });
+    if(response.ok){
+      const data = await response.json();
+      setUser(data);
     }
   }
 

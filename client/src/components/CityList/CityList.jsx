@@ -16,7 +16,7 @@ export default function CityList() {
   const { accessToken } = useAuthToken();
 
   const getWeatherList = async() => {
-    if(!accessToken){
+    if(cityList.length === 0){
       return;
     }
     const cityNameList = cityList.map((cur) => {
@@ -40,6 +40,8 @@ export default function CityList() {
 
   const getSubscribedCityList = async() => {
     if(!accessToken){
+      console.log("Using default city list");
+      setCityList(defaultCityList);
       return;
     }
     const response = await fetch(`${process.env.REACT_APP_API_URL}/user/cityList`, {
@@ -50,15 +52,18 @@ export default function CityList() {
     });
     if(response.ok){
       const cityList = await response.json();
-      console.log(cityList);
+      console.log("Subscribed city list:", cityList);
       setCityList(cityList);
     }
   }
 
   useEffect(()=>{
-    // getSubscribedCityList();
+    getSubscribedCityList();
+  },[accessToken]);
+
+  useEffect(()=>{
     getWeatherList();
-  },[accessToken, cityList]);
+  },[cityList])
 
   return (
     <div className='city-list-container'>
@@ -70,7 +75,6 @@ export default function CityList() {
               key={index} 
               city={cur} 
               weather={weatherList[index]} 
-              setCityList={setCityList}
               unit={unit}
             />
           )

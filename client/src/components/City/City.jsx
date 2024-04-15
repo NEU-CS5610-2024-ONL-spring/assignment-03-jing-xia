@@ -2,9 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card } from 'antd';
 import { useAuthToken } from "../../AuthTokenContext";
+import { useAuth0 } from "@auth0/auth0-react";
 
-export default function City({city, weather, setCityList, unit}) {
+export default function City({city, weather, unit}) {
   const { accessToken } = useAuthToken();
+  const { isAuthenticated, loginWithRedirect } = useAuth0();
   const title = (
     <div style={{display:'flex', justifyContent:'space-between', marginRight:'20px'}}>
       <div>
@@ -12,28 +14,6 @@ export default function City({city, weather, setCityList, unit}) {
       </div>
     </div>
   );
-
-  const subScribe = async() => {
-    if(!accessToken){
-      return;
-    }
-    const fullUrl = `${process.env.REACT_APP_API_URL}/user/addCity`;
-    //const { name, latitude, longitude, country, state } = req.body;
-    const requestBody = {name: city.name, latitude: weather.lat, longitude: weather.lon, country: "", state: ""};
-    const response = await fetch(fullUrl,{
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify(requestBody)
-    });
-    if(response.ok){
-      const data = await response.json();
-      console.log(data);
-      setCityList(data);
-    }
-  }
 
   return (
     <Card
@@ -46,11 +26,6 @@ export default function City({city, weather, setCityList, unit}) {
             style={{marginRight:'10px'}}
           >
             More
-          </Link>
-          <Link 
-            onClick={() => {subScribe();}}
-          >
-            Subscribe
           </Link>
         </div>
       }
@@ -67,3 +42,31 @@ export default function City({city, weather, setCityList, unit}) {
     </Card>
   )
 }
+
+{/* <Link 
+onClick={() => {subScribe();}}
+>
+{isAuthenticated ? "Unsubscribe" : "Subscribe"}
+</Link>
+
+const subScribe = async() => {
+  if(!isAuthenticated){
+    loginWithRedirect();
+    return;
+  }
+  const fullUrl = `${process.env.REACT_APP_API_URL}/user/addCity`;
+  //const { name, latitude, longitude, country, state } = req.body;
+  const requestBody = {name: city.name, latitude: weather.lat, longitude: weather.lon, country: weather.city.country, state: weather.city.state};
+  const response = await fetch(fullUrl,{
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(requestBody)
+  });
+  if(response.ok){
+    const data = await response.json();
+    console.log(data);
+  }
+} */}
