@@ -8,23 +8,10 @@ import { getRainIcon, iconUrlConvert, windDirConvert } from '../../models/Weathe
 export default function Hourly() {
   
   const { accessToken } = useAuthToken();
-
+  const location = useLocation();
   // const city = useLocation().state.city;
-  const [city, setCity] = useState({
-    // "id": 1,
-    // "name": "Oakland",
-    // "latitude": 37.8044557,
-    // "longitude": -122.271356,
-    // "country": "US",
-    // "state": "California",
-    "id": 3,
-    "name": "New York County",
-    "latitude": 40.7127281,
-    "longitude": -74.0060152,
-    "country": "US",
-    "state": "New York"
-  });
-  
+  const [city, setCity] = useState(location.state.weather);
+
   // record request time
   const [requestTime, setRequestTime] = useState();
   const [hourlyWeather, setHourlyWeather] = useState(null);
@@ -33,12 +20,12 @@ export default function Hourly() {
   useEffect(() => {
     setRequestTime(new Date());
     getHourlyWeather();
-  }, []);
+  }, [accessToken]);
 
   const getHourlyWeather = async() => {
     // !!! need unit param
     const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/weather/detail/hourly?latitude=${city.latitude}&longitude=${city.longitude}`,
+      `${process.env.REACT_APP_API_URL}/weather/detail/hourly?latitude=${city.city.latitude}&longitude=${city.city.latitude}`,
       {
         method: "GET",
         headers: {
@@ -70,7 +57,7 @@ export default function Hourly() {
           return (
             <div>
               {renderDay && <div className='hourly-day'>{dt.toLocaleDateString('en-US', {"timeZone": timezone})}</div>}
-              <div className='weather-item' key={index}>
+              <div className='weather-item' key={'hourly'+index}>
                 <div className='hourly-item-time'>{dt.getHours()}:00</div>
                 <div className='hourly-item-weather-info'>
                   <div className='hourly-item-temp'>{weather.temp}°</div>
@@ -94,7 +81,7 @@ export default function Hourly() {
     <div>
       <div className='hourly-header'>
         <h2 className='header-title'>Hourly Weather</h2>
-        <p className='header-time'>As of {requestTime?.toLocaleTimeString('en-US', {"timeZone": hourlyWeather.timezone})}</p>
+        <p className='header-time'>As of {requestTime?.toLocaleTimeString('en-US', {"timeZone": hourlyWeather?.timezone})}</p>
       </div>
       <div>
         {hourlyWeather && renderHourList(hourlyWeather)}
