@@ -16,12 +16,18 @@ export default function CityList() {
   const { accessToken } = useAuthToken();
 
   const getWeatherList = async() => {
+    let cityNameList;
     if(cityList.length === 0){
-      return;
+      // use default city list
+      cityNameList = defaultCityList.map((cur) => {
+        return cur.name;
+      })
     }
-    const cityNameList = cityList.map((cur) => {
-      return cur.name;
-    })
+    else{
+      cityNameList = cityList.map((cur) => {
+        return cur.name;
+      })
+    }
     const encodedCityName = encodeURIComponent(cityNameList);
     const encodedUnit = encodeURIComponent(unit);
     const fullUrl = `${process.env.REACT_APP_API_URL}/weather/list?cities=${encodedCityName}&unit=${encodedUnit}`;
@@ -51,19 +57,19 @@ export default function CityList() {
       }
     });
     if(response.ok){
-      const cityList = await response.json();
+      let cityList = await response.json();
       console.log("Subscribed city list:", cityList);
+      if(cityList.length === 0){
+        cityList = defaultCityList;
+      }
       setCityList(cityList);
     }
   }
 
   useEffect(()=>{
     getSubscribedCityList();
-  },[accessToken]);
-
-  useEffect(()=>{
     getWeatherList();
-  },[cityList])
+  },[accessToken]);
 
   return (
     <div className='city-list-container'>
