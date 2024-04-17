@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import './Hourly.css';
+import { useLocation } from 'react-router-dom';
 import { useAuthToken } from '../../AuthTokenContext';
-import { Button } from 'antd';
 import { getRainIcon, iconUrlConvert, windDirConvert } from '../../models/WeatherConverter';
 
 export default function Hourly() {
@@ -13,12 +12,11 @@ export default function Hourly() {
   const [city, setCity] = useState(location.state.weather);
 
   // record request time
-  const [requestTime, setRequestTime] = useState();
+  const [requestTime, setRequestTime] = useState(new Date());
   const [hourlyWeather, setHourlyWeather] = useState(null);
   
   
   useEffect(() => {
-    setRequestTime(new Date());
     getHourlyWeather();
   }, [accessToken]);
 
@@ -35,8 +33,8 @@ export default function Hourly() {
       });
     if(response.ok){
       const data = await response.json();
-      console.log(data);
       setHourlyWeather(data);
+      console.log(data);
     }
   };
 
@@ -55,8 +53,18 @@ export default function Hourly() {
           // console.log(iconUrl);
           const direction = windDirConvert(weather.wind_deg);
           return (
-            <div>
-              {renderDay && <div className='hourly-day'>{dt.toLocaleDateString('en-US', {"timeZone": timezone})}</div>}
+            <div key={index}>
+              {renderDay && 
+                <div className='hourly-day'>
+                  {dt.toLocaleDateString('en-US', 
+                    {
+                      weekday: 'short',
+                      month: 'short',
+                      day: 'numeric',
+                      timezone: timezone,
+                    })}
+                </div>
+              }
               <div className='weather-item' key={'hourly'+index}>
                 <div className='hourly-item-time'>{dt.getHours()}:00</div>
                 <div className='hourly-item-weather-info'>
@@ -81,7 +89,15 @@ export default function Hourly() {
     <div>
       <div className='hourly-header'>
         <h2 className='header-title'>Hourly Weather</h2>
-        <p className='header-time'>As of {requestTime?.toLocaleTimeString('en-US', {"timeZone": hourlyWeather?.timezone})}</p>
+        <p className='header-time'>As of {requestTime?.toLocaleTimeString('en-US', 
+                                            { 
+                                              hour: 'numeric',
+                                              minute: 'numeric',
+                                              timezone: hourlyWeather?.timezone,
+                                              timeZoneName: 'short',
+                                            }
+                                          )}
+        </p>
       </div>
       <div>
         {hourlyWeather && renderHourList(hourlyWeather)}
