@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Input, Select, Dropdown, Button } from "antd"
 import { UserOutlined } from "@ant-design/icons";
+import { UnitContext } from '../../UnitContext';
 import './Header.css';
 
 const { Search } = Input;
 
 export default function Header() {
   const { logout } = useAuth0();
+  const [ unit, updateUnit ] = React.useContext(UnitContext);
   const navigate = useNavigate();
   //item list for the dropdown of user button
   const items = [
@@ -41,7 +43,8 @@ export default function Header() {
         />
         <div className='header-bottom-right'>
           <Select 
-            defaultValue = 'imperial'
+            defaultValue = {unit}
+            onChange = { (value) => { updateUnit(value) }}
             options = {[
               {
                 value:'metric',

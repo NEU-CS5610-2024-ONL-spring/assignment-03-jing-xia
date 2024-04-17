@@ -9,6 +9,7 @@ import { Auth0Provider } from "@auth0/auth0-react";
 import { AuthTokenProvider } from "./AuthTokenContext";
 import { ConfigProvider } from 'antd';
 import RequireAuth from "./components/RequireAuth";
+import { UnitContextProvider } from "./UnitContext";
 
 const container = document.getElementById("root");
 const root = ReactDOMClient.createRoot(container);
@@ -27,32 +28,34 @@ root.render(
       }}
     >
       <AuthTokenProvider>
-        <BrowserRouter>
-          <ConfigProvider
-            theme={{
-              token: {
-                colorBgContainer: 'aliceblue',
-              },
-              components: {
-                Select: {
-                  selectorBg:'aliceblue'
+        <UnitContextProvider>
+          <BrowserRouter>
+            <ConfigProvider
+              theme={{
+                token: {
+                  colorBgContainer: 'aliceblue',
                 },
-                Menu: {
-                  itemColor: 'white',
-                  itemHoverColor: '#1677ff',
-                }
-              },
-            }}
-          >
-            <Routes>
-              <Route path="/*" element={<Home />} />
-              <Route path="/home/*" element={<Home />} />
-              <Route path="/verify-user" element={<VerifyUser />} />
-              <Route path="/profile" element={<RequireAuth><UserProfile /></RequireAuth>} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </ConfigProvider>
-        </BrowserRouter>
+                components: {
+                  Select: {
+                    selectorBg:'aliceblue'
+                  },
+                  Menu: {
+                    itemColor: 'white',
+                    itemHoverColor: '#1677ff',
+                  }
+                },
+              }}
+            >
+              <Routes>
+                <Route path="/*" element={<Home />} />
+                <Route path="/home/*" element={<Home />} />
+                <Route path="/verify-user" element={<VerifyUser />} />
+                <Route path="/profile" element={<RequireAuth><UserProfile /></RequireAuth>} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </ConfigProvider>
+          </BrowserRouter>
+        </UnitContextProvider>
       </AuthTokenProvider>
     </Auth0Provider>
   </React.StrictMode>

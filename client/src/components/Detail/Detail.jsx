@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Menu, Card } from 'antd';
-import { Link, useLocation, Routes, Route } from 'react-router-dom';
+import { Link, useLocation, Routes, Route, Navigate } from 'react-router-dom';
 import Hourly from '../Hourly/Hourly';
 import SevenDays from '../SevenDays/SevenDays';
 import Monthly from '../Monthly/Monthly';
@@ -78,7 +78,7 @@ export default function Detail() {
           <Route path='/hourly' element={<Hourly />}/>
           <Route path='/seven-days' element={<SevenDays />}/>
           <Route path='/monthly' element={<Monthly />}/>
-          <Route path='*' element={<Hourly />}/>
+          <Route path='*' element={<Navigate to='/detail/hourly' state={location.state}/>}/>
         </Routes>
       </Card>
     </div>

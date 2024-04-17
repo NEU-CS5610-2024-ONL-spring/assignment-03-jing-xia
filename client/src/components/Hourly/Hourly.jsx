@@ -3,10 +3,12 @@ import './Hourly.css';
 import { useLocation } from 'react-router-dom';
 import { useAuthToken } from '../../AuthTokenContext';
 import { getRainIcon, iconUrlConvert, windDirConvert } from '../../models/WeatherConverter';
+import { UnitContext } from '../../UnitContext';
 
 export default function Hourly() {
   
   const { accessToken } = useAuthToken();
+  const [ unit, updateUnit ] = React.useContext(UnitContext);
   const location = useLocation();
   // const city = useLocation().state.city;
   const [city, setCity] = useState(location.state.weather);
@@ -18,12 +20,11 @@ export default function Hourly() {
   
   useEffect(() => {
     getHourlyWeather();
-  }, [accessToken]);
+  }, [accessToken, unit]);
 
   const getHourlyWeather = async() => {
-    // !!! need unit param
     const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/weather/detail/hourly?latitude=${city.city.latitude}&longitude=${city.city.latitude}`,
+      `${process.env.REACT_APP_API_URL}/weather/detail/hourly?latitude=${city.city.latitude}&longitude=${city.city.latitude}&unit=${unit}`,
       {
         method: "GET",
         headers: {

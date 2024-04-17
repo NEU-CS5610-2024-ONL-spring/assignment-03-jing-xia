@@ -3,27 +3,15 @@ import { useAuthToken } from '../../AuthTokenContext';
 import { getRainIcon, iconUrlConvert, windDirConvert } from '../../models/WeatherConverter';
 import './EightDays.css';
 import { useLocation } from 'react-router-dom';
+import { UnitContext } from '../../UnitContext';
 
 export default function SevenDays() {
 
   const { accessToken } = useAuthToken();
+  const [ unit, updateUnit ] = React.useContext(UnitContext);
 
   const location = useLocation();
   const [city, setCity] = useState(location.state.weather.city);
-  // const [city, setCity] = useState({
-  //   // "id": 1,
-  //   // "name": "Oakland",
-  //   // "latitude": 37.8044557,
-  //   // "longitude": -122.271356,
-  //   // "country": "US",
-  //   // "state": "California",
-  //   "id": 3,
-  //   "name": "New York County",
-  //   "latitude": 40.7127281,
-  //   "longitude": -74.0060152,
-  //   "country": "US",
-  //   "state": "New York"
-  // });
 
   // record request time
   const [requestTime, setRequestTime] = useState(new Date());
@@ -31,12 +19,11 @@ export default function SevenDays() {
   
   useEffect(() => {
     getDailyWeather();
-  }, [accessToken]);
+  }, [accessToken, unit]);
 
   const getDailyWeather = async() => {
-    // !!! need unit param
     const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/weather/detail/daily?latitude=${city.latitude}&longitude=${city.longitude}`,
+      `${process.env.REACT_APP_API_URL}/weather/detail/daily?latitude=${city.latitude}&longitude=${city.longitude}&unit=${unit}`,
       {
         method: "GET",
         headers: {
