@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useAuthToken } from '../../AuthTokenContext';
 import { getRainIcon, iconUrlConvert, windDirConvert } from '../../models/WeatherConverter';
-import './EightDays.css';
+import './Daily.css';
 import { useLocation } from 'react-router-dom';
 import { UnitContext } from '../../UnitContext';
 
-export default function SevenDays() {
+export default function Daily() {
 
   const { accessToken } = useAuthToken();
   const [ unit, updateUnit ] = React.useContext(UnitContext);
@@ -70,7 +70,7 @@ export default function SevenDays() {
                   <img src={getRainIcon()} alt={`Precipitation icon`}/>
                       {weather.pop === 0 ? "0%" : "100%"}</div>
                   <div className='weather-item-wind'>
-                    {direction} - {Math.round(weather.wind_speed)} mph
+                    {direction} - {Math.round(weather.wind_speed)} {unit === "imperial" ? "mph" : "m/s"}
                   </div>
                 </div>
               </div>

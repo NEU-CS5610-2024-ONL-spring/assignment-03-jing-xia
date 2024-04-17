@@ -1,39 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuthToken } from '../../AuthTokenContext';
 import './Detail.css';
+import { Button } from 'antd';
 
-export default function DetailHeader({ city }) {
+export default function DetailHeader({ _city }) {
   
   const { accessToken } = useAuthToken();
   const [subscribed, setSubscribed] = useState(false);
 
-  const [location, setLocation] = useState({
-    // "id": 1,
-    // "name": "Oakland",
-    // "latitude": 37.8044557,
-    // "longitude": -122.271356,
-    // "country": "US",
-    // "state": "California",
-    "id": 3,
-    "name": "New York County",
-    "latitude": 40.7127281,
-    "longitude": -74.0060152,
-    "country": "US",
-    "state": "New York"
-  });
+  const [city, setCity] = useState(null);
 
   useEffect(() => {
-    isSubscribed();
-    // setCity({
-    //   "id": 1,
-    //   "name": "Oakland",
-    //   "latitude": 37.8044557,
-    //   "longitude": -122.271356,
-    //   "country": "US",
-    //   "state": "California",
-    // });
-  }, [accessToken]);
+    setCity(_city);
+    if(accessToken && city){
+      isSubscribed();
+    }
+  }, [accessToken, _city]);
 
   // subcribe/unsubscribe click event
   const onSubscribe = () => {
@@ -45,7 +28,7 @@ export default function DetailHeader({ city }) {
   };
 
   const isSubscribed = async() => {
-    const fullUrl = `${process.env.REACT_APP_API_URL}/user/isSubscribed?latitude=${location.latitude}&longitude=${location.longitude}`;
+    const fullUrl = `${process.env.REACT_APP_API_URL}/user/isSubscribed?latitude=${city.latitude}&longitude=${city.longitude}`;
     const response = await fetch(fullUrl,{
       method: "GET",
       headers: {
@@ -55,8 +38,9 @@ export default function DetailHeader({ city }) {
     });
     if(response.ok){
       const data = await response.json();
-      if(data){
+      if(data !== false){
         setSubscribed(true);
+        setCity(data);
       }
       console.log(typeof(data));
     }
@@ -65,7 +49,7 @@ export default function DetailHeader({ city }) {
   const subscribeCity = async() => {
     const fullUrl = `${process.env.REACT_APP_API_URL}/user/addCity`;
     //const { name, latitude, longitude, country, state } = req.body;
-    const requestBody = location;
+    const requestBody = city;
     const response = await fetch(fullUrl,{
       method: "POST",
       headers: {
@@ -76,14 +60,14 @@ export default function DetailHeader({ city }) {
     });
     if(response.ok){
       const data = await response.json();
-      setLocation(data);
+      setCity(data);
       setSubscribed(true);
-      console.log(data);
+      // console.log(data);
     }
   }
 
   const unSubscribeCity = async() => {
-    const fullUrl = `${process.env.REACT_APP_API_URL}/user/removeCity?cityId=${location.id}`;
+    const fullUrl = `${process.env.REACT_APP_API_URL}/user/removeCity?cityId=${city.id}`;
     const response = await fetch(fullUrl,{
       method: "DELETE",
       headers: {
@@ -100,10 +84,10 @@ export default function DetailHeader({ city }) {
 
   return (
     <div className='detail-header'>
-      <p className='header-city'>{location.name}, {location.state}, {location.country}</p>
-      <Link onClick={onSubscribe}>
+      {city && <p className='header-city'>{city.name}, {city.state}, {city.country}</p>}
+      <Button onClick={onSubscribe}>
         {subscribed ? "Unsubscribe" : "Subscribe"}
-      </Link>
+      </Button>
     </div>
   )
 }

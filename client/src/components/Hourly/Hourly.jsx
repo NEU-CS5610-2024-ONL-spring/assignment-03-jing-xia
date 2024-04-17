@@ -11,7 +11,7 @@ export default function Hourly() {
   const [ unit, updateUnit ] = React.useContext(UnitContext);
   const location = useLocation();
   // const city = useLocation().state.city;
-  const [city, setCity] = useState(location.state.weather);
+  const [city, setCity] = useState(location.state.weather.city);
 
   // record request time
   const [requestTime, setRequestTime] = useState(new Date());
@@ -24,7 +24,7 @@ export default function Hourly() {
 
   const getHourlyWeather = async() => {
     const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/weather/detail/hourly?latitude=${city.city.latitude}&longitude=${city.city.latitude}&unit=${unit}`,
+      `${process.env.REACT_APP_API_URL}/weather/detail/hourly?latitude=${city.latitude}&longitude=${city.longitude}&unit=${unit}`,
       {
         method: "GET",
         headers: {
@@ -58,25 +58,30 @@ export default function Hourly() {
               {renderDay && 
                 <div className='hourly-day'>
                   {dt.toLocaleDateString('en-US', 
-                    {
-                      weekday: 'short',
-                      month: 'short',
-                      day: 'numeric',
-                      timezone: timezone,
-                    })}
+                  {
+                    weekday: 'short',
+                    month: 'short',
+                    day: 'numeric',
+                    timezone: timezone,
+                  })}
                 </div>
               }
               <div className='weather-item' key={'hourly'+index}>
                 <div className='hourly-item-time'>{dt.getHours()}:00</div>
                 <div className='hourly-item-weather-info'>
-                  <div className='hourly-item-temp'>{weather.temp}°</div>
-                  <div className='hourly-item-description'>
-                    <img src={iconUrl} alt={weather.weather[0].description}/>
-                    {weather.weather[0].description}</div>
-                  <div className='hourly-item-precipitation'>
-                    <img src={getRainIcon()} alt={`Precipitation icon`}/>
-                    {weather.pop === 0 ? "0%" : "100%"}</div>
-                  <div className='hourly-item-wind'>{direction} - {Math.round(weather.wind_speed)} mph</div>
+                  <div className='hourly-item-info-1'>
+                    <div className='hourly-item-temp'>{weather.temp}°</div>
+                    <div className='hourly-item-description'>
+                      <img src={iconUrl} alt={weather.weather[0].description}/>
+                      {weather.weather[0].description}</div>
+                  </div>
+                  <div className='hourly-item-info-2'>
+                    <div className='hourly-item-precipitation'>
+                      <img src={getRainIcon()} alt={`Precipitation icon`}/>
+                      {weather.pop === 0 ? "0%" : "100%"}</div>
+                    <div className='hourly-item-wind'>
+                      {direction} - {Math.round(weather.wind_speed)} {unit === "imperial" ? "mph" : "m/s"}</div>
+                  </div>
                 </div>
               </div>
             </div>

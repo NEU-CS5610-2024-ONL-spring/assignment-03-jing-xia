@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { Menu, Card } from 'antd';
 import { Link, useLocation, Routes, Route, Navigate } from 'react-router-dom';
 import Hourly from '../Hourly/Hourly';
-import SevenDays from '../SevenDays/SevenDays';
-import Monthly from '../Monthly/Monthly';
 import './Detail.css';
 import DetailHeader from './DetailHeader';
+import Daily from '../Daily/Daily';
 
 export default function Detail() {
   // cityName is passed by using state object in the <Link> component
@@ -36,24 +35,13 @@ export default function Detail() {
     {
       label: (
         <Link 
-          to='/detail/seven-days'
+          to='/detail/daily'
           state={location.state}
         >
-          Eight Days
+          Eight Day
         </Link>
       ),
-      key: 'seven-days',
-    },
-    {
-      label: (
-        <Link 
-          to='/detail/monthly'
-          state={location.state}
-        >
-          Monthly
-        </Link>
-      ),
-      key: 'monthly',
+      key: 'daily',
     },
   ];
 
@@ -73,11 +61,10 @@ export default function Detail() {
         items={items}
       />
       <Card className='detail-content'>
-        <DetailHeader city={location.state}/>
+        <DetailHeader _city={location.state.weather.city}/>
         <Routes>
           <Route path='/hourly' element={<Hourly />}/>
-          <Route path='/seven-days' element={<SevenDays />}/>
-          <Route path='/monthly' element={<Monthly />}/>
+          <Route path='/daily' element={<Daily />}/>
           <Route path='*' element={<Navigate to='/detail/hourly' state={location.state}/>}/>
         </Routes>
       </Card>

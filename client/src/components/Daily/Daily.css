@@ -23,13 +23,11 @@
   display: grid;
   grid-template-columns: 3fr 5fr;
   align-items: center;
-
 }
 .weather-item-info-2 {
   display: grid;
   grid-template-columns: 3fr 3fr;
   align-items: center;
-
 }
 .weather-item-description {
   display: flex;
