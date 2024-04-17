@@ -22,7 +22,7 @@
     margin-bottom: 10px;
   }
 }
-@media (max-width: 850px) {
+@media (max-width: 1200px) {
   .detail-content {
     margin: 20px auto;
     width: 80%;
