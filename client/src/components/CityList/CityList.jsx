@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuthToken } from "../../AuthTokenContext";
 import './CityList.css';
 import City from '../City/City';
+import { UnitContext } from '../../UnitContext';
 
 export default function CityList() {
   const defaultCityList = [
@@ -11,9 +12,9 @@ export default function CityList() {
     {name:'Chicago'},
   ]
   const [ cityList, setCityList ] = useState(defaultCityList);
-  const [ unit, setUnit ] = useState("imperial");
   const [ weatherList, setWeatherList ] = useState(null);
   const { accessToken } = useAuthToken();
+  const [ unit, updateUnit ] = React.useContext(UnitContext);
 
   const getWeatherList = async() => {
     let cityNameList;
@@ -70,6 +71,10 @@ export default function CityList() {
     getSubscribedCityList();
     getWeatherList();
   },[accessToken]);
+
+  useEffect(()=>{
+    getWeatherList();
+  },[unit]);
 
   return (
     <div className='city-list-container'>
