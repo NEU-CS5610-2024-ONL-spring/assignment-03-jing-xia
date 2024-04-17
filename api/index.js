@@ -157,13 +157,12 @@ app.post("/user/addCity", async (req, res) => {
  */
 // app.delete("/user/removeCity", requireAuth, async (req, res) => {
 app.delete("/user/removeCity", async (req, res) => {
+  if(!req.query.cityId){
+    return res.status(400).send("cityId query param is required");
+  }
   // const auth0Id = req.auth.payload.sub;
   const auth0Id = "auth0|661201489fbd80a7b65838e5";
   const cityId = req.query.cityId;
-  if(!cityId){
-    // res.status(400).send("id query param is required");
-    return res.status(400).send("id query param is required");
-  }
   const cityList = await prisma.cityList.deleteMany({
     where: {
       user: {
@@ -239,6 +238,8 @@ app.get("/user/isSubscribed", requireAuth, async (req, res) => {
   // const auth0Id = "auth0|661201489fbd80a7b65838e5";
   const latitude = +req.query.latitude;
   const longitude = +req.query.longitude;
+  console.log("latitude: ", latitude);
+  console.log("longitude: ", longitude);
   
   const city = await prisma.city.findFirst({
     where:{
@@ -260,7 +261,7 @@ app.get("/user/isSubscribed", requireAuth, async (req, res) => {
   if(!cityList){
     return res.json(false);
   }
-  res.json(true);
+  res.json(city);
 });
 
 /**
