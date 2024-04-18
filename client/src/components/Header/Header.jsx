@@ -54,7 +54,7 @@ export default function Header() {
     }
   }
 
-  const debouncedSearch = useCallback(debounce(search, 500),[])
+  const debouncedSearch = useCallback(debounce(search, 1000),[])
 
   const handleSearch = (newValue) => {
     if(newValue === ''){

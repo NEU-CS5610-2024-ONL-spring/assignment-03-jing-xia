@@ -4,28 +4,16 @@ import { useAuthToken } from '../../AuthTokenContext';
 import './Detail.css';
 import { Button } from 'antd';
 
-export default function DetailHeader({ _city }) {
+export default function DetailHeader({ city }) {
   
   const { accessToken } = useAuthToken();
   const [subscribed, setSubscribed] = useState(false);
 
-  const [city, setCity] = useState(null);
-
   useEffect(() => {
-    setCity(_city);
     if(accessToken && city){
       isSubscribed();
     }
-  }, [accessToken, _city]);
-
-  // subcribe/unsubscribe click event
-  const onSubscribe = () => {
-    if(subscribed){
-      unSubscribeCity();
-    } else {
-      subscribeCity();
-    }
-  };
+  }, [accessToken, city]);
 
   const isSubscribed = async() => {
     const fullUrl = `${process.env.REACT_APP_API_URL}/user/isSubscribed?latitude=${city.latitude}&longitude=${city.longitude}`;
@@ -40,11 +28,21 @@ export default function DetailHeader({ _city }) {
       const data = await response.json();
       if(data !== false){
         setSubscribed(true);
-        setCity(data);
+        city.id = data.id;
+      } else {
+        setSubscribed(false);
       }
-      console.log(typeof(data));
     }
   };
+
+    // subcribe/unsubscribe click event
+    const onSubscribe = () => {
+      if(subscribed){
+        unSubscribeCity();
+      } else {
+        subscribeCity();
+      }
+    };
   
   const subscribeCity = async() => {
     const fullUrl = `${process.env.REACT_APP_API_URL}/user/addCity`;
@@ -60,9 +58,8 @@ export default function DetailHeader({ _city }) {
     });
     if(response.ok){
       const data = await response.json();
-      setCity(data);
+      city.id = data.id;
       setSubscribed(true);
-      // console.log(data);
     }
   }
 
@@ -84,9 +81,9 @@ export default function DetailHeader({ _city }) {
 
   return (
     <div className='detail-header'>
-      {city && <p className='header-city'>{city.name}, {city.state}, {city.country}</p>}
+      <p className='header-city'>{city?.name}, {city?.state}, {city?.country}</p>
       <Button onClick={onSubscribe}>
-        {subscribed ? "Unsubscribe" : "Subscribe"}
+        {subscribed === true ? "Unsubscribe" : "Subscribe"}
       </Button>
     </div>
   )
