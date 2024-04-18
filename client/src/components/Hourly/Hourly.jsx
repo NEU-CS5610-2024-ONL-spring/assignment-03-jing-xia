@@ -10,8 +10,9 @@ export default function Hourly() {
   const { accessToken } = useAuthToken();
   const [ unit, updateUnit ] = React.useContext(UnitContext);
   const location = useLocation();
+  console.log(location.state);
   // const city = useLocation().state.city;
-  const [city, setCity] = useState(location.state.weather.city);
+  const [city, setCity] = useState(location.state);
 
   // record request time
   const [requestTime, setRequestTime] = useState(new Date());
