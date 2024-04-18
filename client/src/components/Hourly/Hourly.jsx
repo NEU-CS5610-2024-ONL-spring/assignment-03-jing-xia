@@ -10,7 +10,7 @@ export default function Hourly() {
   const { accessToken } = useAuthToken();
   const [ unit, updateUnit ] = React.useContext(UnitContext);
   const location = useLocation();
-  console.log(location.state);
+  // console.log(location.state);
   // const city = useLocation().state.city;
   const [city, setCity] = useState(location.state);
 
@@ -36,7 +36,7 @@ export default function Hourly() {
     if(response.ok){
       const data = await response.json();
       setHourlyWeather(data);
-      console.log(data);
+      // console.log(data);
     }
   };
 
