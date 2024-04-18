@@ -46,11 +46,6 @@ export default function CityList() {
   }
 
   const getSubscribedCityList = async() => {
-    if(!accessToken){
-      console.log("Using default city list");
-      setCityList(defaultCityList);
-      return;
-    }
     const response = await fetch(`${process.env.REACT_APP_API_URL}/user/cityList`, {
       method: "GET",
       headers: {
@@ -69,7 +64,6 @@ export default function CityList() {
 
   useEffect(()=>{
     getSubscribedCityList();
-    getWeatherList();
   },[accessToken]);
 
   useEffect(()=>{

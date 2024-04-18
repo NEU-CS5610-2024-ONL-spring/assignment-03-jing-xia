@@ -61,7 +61,7 @@ export default function Detail() {
         items={items}
       />
       <Card className='detail-content'>
-        <DetailHeader _city={location.state.weather.city}/>
+        <DetailHeader _city={location.state}/>
         <Routes>
           <Route path='/hourly' element={<Hourly />}/>
           <Route path='/daily' element={<Daily />}/>

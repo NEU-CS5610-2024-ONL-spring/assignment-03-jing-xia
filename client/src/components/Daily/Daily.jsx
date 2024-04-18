@@ -11,7 +11,7 @@ export default function Daily() {
   const [ unit, updateUnit ] = React.useContext(UnitContext);
 
   const location = useLocation();
-  const [city, setCity] = useState(location.state.weather.city);
+  const [city, setCity] = useState(location.state);
 
   // record request time
   const [requestTime, setRequestTime] = useState(new Date());
