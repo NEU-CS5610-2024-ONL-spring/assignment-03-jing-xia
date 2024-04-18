@@ -68,7 +68,7 @@ export default function CityList() {
 
   useEffect(()=>{
     getWeatherList();
-  },[unit]);
+  },[unit, cityList]);
 
   return (
     <div className='city-list-container'>
