@@ -33,3 +33,27 @@
 .profile-content-header {
   margin-bottom: 20px;
 }
+
+.debugger-title{
+  text-align: start;
+}
+
+.debugger-content{
+  /* width: 100%; */
+  text-align: start;
+  text-wrap: wrap;
+  scroll-behavior: auto;
+  word-wrap: break-word;
+}
+@media (max-width: 700px) {
+  .profile-content {
+    width: 80%;
+  }
+  h1 {
+    font-size: large;
+    word-wrap: break-word;
+  }
+  p {
+    word-wrap: break-word;
+  }
+}

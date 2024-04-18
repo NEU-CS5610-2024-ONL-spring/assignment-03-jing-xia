@@ -14,6 +14,8 @@ export default function UserProfile() {
   const settings = [
     "Access to my location",
   ];
+
+  const authDebugger = [{title:"Token", content:accessToken.toString()}];
   const collapseItems = [
     {
       key: '1',
@@ -52,6 +54,29 @@ export default function UserProfile() {
           }
         />
       ),
+    },
+    {
+      key: '3',
+      label: 'Auth Debugger',
+      children: (
+        <List
+          dataSource={authDebugger}
+          itemLayout="vertical"
+          renderItem={
+            (item) => {
+              return (
+                <List.Item>
+                  <List.Item.Meta title={<p className='debugger-title'>{item.title}</p>}/>
+                  <p className='debugger-content'>
+                    {item.content}
+                  </p>
+                </List.Item>
+              )
+            }
+          }>
+
+        </List>
+      )
     },
   ];
 
