@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Input, Select, Dropdown, Popover, List } from "antd"
@@ -7,15 +7,14 @@ import { UnitContext } from '../../UnitContext';
 import './Header.css';
 import { useAuthToken } from '../../AuthTokenContext';
 
-const { Search } = Input;
+const { Option } = Select;
 
 export default function Header() {
   const { logout } = useAuth0();
   const [ unit, updateUnit ] = React.useContext(UnitContext);
-  const [ loading, setLoading ] = useState(false);
-  const [ open, setOpen ] = useState(false);
   const { accessToken } = useAuthToken();
-  const [ content, setContent ] = useState();
+  const [ data, setData ] = useState();
+  const [ options, setOptions ] = useState(null);
   const navigate = useNavigate();
   //item list for the dropdown of user button
   const items = [
@@ -37,21 +36,9 @@ export default function Header() {
     },
   ]
 
-  const onChange = async(e) => {
-    if(e.target.value === ''){
-      return;
-    }
-    setOpen(true);
-    await search(e.target.value);
-  }
-
-  const handleBlur = () => {
-    setOpen(false);
-  }
-
-  const search = async (value) => {
-    setLoading(true);
-    const fullUrl = `${process.env.REACT_APP_API_URL}/search?city=${value}`;
+  const search = async (newValue) => {
+    const encodedCityName = encodeURIComponent(newValue);
+    const fullUrl = `${process.env.REACT_APP_API_URL}/search?city=${encodedCityName}`;
     //!!! url cannot contain space, need to modify it
     console.log(fullUrl);
     const response = await fetch(fullUrl, {
@@ -61,53 +48,53 @@ export default function Header() {
       }
     });
     if(response.ok){
-      setLoading(false);
       const data = await response.json();
       console.log(data);
-      renderSearchList(data);
+      setData(data);
     }
   }
 
-  const renderSearchList = (data) => {
-    setOpen(true);
-    const list = (
-      <List
-      dataSource={data}
-      renderItem={(item) => {
-        console.log(item);
-        return (<List.Item>
-          <Link 
-            to='/detail'
-            state={item}
-          >
-            {item.name}, {item.country}
-          </Link>
-        </List.Item>);
-      }}
-    />
-    )
-    setContent(list);
+  const debouncedSearch = useCallback(debounce(search, 500),[])
+
+  const handleSearch = (newValue) => {
+    if(newValue === ''){
+      return;
+    }
+    debouncedSearch(newValue);
   }
+  useEffect(()=>{
+    const new_options = data?.map((cur, index)=>{
+      const cur_option = (
+        <Option key={index}>
+          <Link 
+            to={'/detail'} 
+            state={cur}
+          >
+            {cur.name}, {cur.country}
+          </Link>
+        </Option>
+      )
+      return cur_option;
+    });
+    setOptions(new_options);
+  },[data])
+  
 
   return (
     <div className='container'>
       <h1 className='header-top'>Weather Forecast</h1>
       <div className='header-bottom'>
-        <Popover 
-          open={open} 
-          placement="bottom" 
-          content={content} 
-          arrow={false}
+        <Select
+          showSearch
+          suffixIcon={null}
+          placeholder="Search by city name"
+          defaultActiveFirstOption={false}
+          filterOption={false}
+          onSearch={handleSearch}
+          notFoundContent={null}
         >
-          <Search
-            className='header-bottom-left'
-            placeholder="Search by city name"
-            loading={loading}
-            onChange={onChange}
-            onFocus={onChange}
-            onBlur={handleBlur}
-          />
-        </Popover>
+          {options}
+        </Select>
         <div className='header-bottom-right'>
           <Select 
             defaultValue = {unit}
@@ -145,3 +132,13 @@ export default function Header() {
     
   )
 }
+
+const debounce = (func, delay) => {
+  let timer = null;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(()=>{
+      func.apply(this, args);
+    }, delay);
+  }
+};
