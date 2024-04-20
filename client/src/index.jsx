@@ -10,6 +10,7 @@ import { AuthTokenProvider } from "./AuthTokenContext";
 import { ConfigProvider } from 'antd';
 import RequireAuth from "./components/RequireAuth";
 import { UnitContextProvider } from "./UnitContext";
+import App from "./App";
 
 const container = document.getElementById("root");
 const root = ReactDOMClient.createRoot(container);
@@ -18,6 +19,7 @@ const requestedScopes = ["profile", "email"];
 
 root.render(
   <React.StrictMode>
+    {/* <App/> */}
     <Auth0Provider
       domain={process.env.REACT_APP_AUTH0_DOMAIN}
       clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
