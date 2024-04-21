@@ -71,7 +71,7 @@ export default function CityList() {
   },[unit, cityList]);
 
   return (
-    <div className='city-list-container'>
+    <div className='city-list-container' data-testid="home-cityList">
       {
         cityList && weatherList &&
         cityList.map((cur, index)=>{

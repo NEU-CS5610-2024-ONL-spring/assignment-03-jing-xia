@@ -41,5 +41,8 @@
   },
   "jest": {
     "resetMocks": false
+  },
+  "devDependencies": {
+    "msw": "^1.3.3"
   }
 }
