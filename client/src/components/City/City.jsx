@@ -14,6 +14,7 @@ export default function City({city, weather, unit}) {
 
   return (
     <Card
+      data-testid='city-card'
       title={title}
       extra={
         <div>
