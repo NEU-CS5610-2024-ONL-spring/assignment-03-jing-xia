@@ -10,7 +10,7 @@ import { AuthTokenProvider } from "./AuthTokenContext";
 import { ConfigProvider } from 'antd';
 import RequireAuth from "./components/RequireAuth";
 import { UnitContextProvider } from "./UnitContext";
-import App from "./App";
+// import App from "./App";
 
 const container = document.getElementById("root");
 const root = ReactDOMClient.createRoot(container);
