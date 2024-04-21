@@ -15,7 +15,7 @@ export default function UserProfile() {
     "Access to my location",
   ];
 
-  const authDebugger = [{title:"Token", content:accessToken.toString()}];
+  const authDebugger = [{title:"Token", content:accessToken?.toString()}];
   const collapseItems = [
     {
       key: '1',
