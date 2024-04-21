@@ -71,10 +71,10 @@ app.post("/verify-user", requireAuth, async (req, res) => {
  * return: city array
  * This endpoint is used to get the city list of the user
  */
-//app.get("/user/cityList", requireAuth, async (req, res) => {
-app.get("/user/cityList", async (req, res) => {
-  //const auth0Id = req.auth.payload.sub;
-  const auth0Id = "auth0|661201489fbd80a7b65838e5";
+app.get("/user/cityList", requireAuth, async (req, res) => {
+// app.get("/user/cityList", async (req, res) => {
+  const auth0Id = req.auth.payload.sub;
+  // const auth0Id = "auth0|661201489fbd80a7b65838e5";
   const cities = await prisma.city.findMany({
     where:{
       users: {
@@ -96,10 +96,10 @@ app.get("/user/cityList", async (req, res) => {
  * return: city object
  * This endpoint is used to add a city to the user's city list
  */
-// app.post("/user/addCity", requireAuth, async (req, res) => {
-app.post("/user/addCity", async (req, res) => {
-  // const auth0Id = req.auth.payload.sub;
-  const auth0Id = "auth0|661201489fbd80a7b65838e5";
+app.post("/user/addCity", requireAuth, async (req, res) => {
+// app.post("/user/addCity", async (req, res) => {
+  const auth0Id = req.auth.payload.sub;
+  // const auth0Id = "auth0|661201489fbd80a7b65838e5";
   const { name, latitude, longitude, country, state } = req.body;
   if(!name || !latitude || !longitude || !country || !state){
     return res.status(400).send("City's information is required");
@@ -155,20 +155,23 @@ app.post("/user/addCity", async (req, res) => {
  * return: 200
  * This endpoint is used to remove a city from the user's city list
  */
-// app.delete("/user/removeCity", requireAuth, async (req, res) => {
-app.delete("/user/removeCity", async (req, res) => {
-  if(!req.query.cityId){
-    return res.status(400).send("cityId query param is required");
+app.delete("/user/removeCity", requireAuth, async (req, res) => {
+// app.delete("/user/removeCity", async (req, res) => {
+  // if(!req.query.cityId){
+  //   return res.status(400).send("cityId query param is required");
+  // }
+  const auth0Id = req.auth.payload.sub;
+  // const auth0Id = "auth0|661201489fbd80a7b65838e5";
+  const cityId = +req.query.cityId;
+  if(isNaN(cityId)){
+    return res.status(400).send("Invalid cityId");
   }
-  // const auth0Id = req.auth.payload.sub;
-  const auth0Id = "auth0|661201489fbd80a7b65838e5";
-  const cityId = req.query.cityId;
   const cityList = await prisma.cityList.deleteMany({
     where: {
       user: {
         auth0Id: auth0Id,
       },
-      cityId: parseInt(cityId),
+      cityId: cityId,
     }
   });
   if(!cityList){
@@ -184,10 +187,10 @@ app.delete("/user/removeCity", async (req, res) => {
  * return: user
  * This endpoint is used to update the allowLocation in user table
  */
-// app.put("/user/locate", requireAuth, async (req, res) => {
-app.put("/user/locate", async (req, res) => {
-  // const auth0Id = req.auth.payload.sub;
-  const auth0Id = "auth0|661201489fbd80a7b65838e5";
+app.put("/user/locate", requireAuth, async (req, res) => {
+// app.put("/user/locate", async (req, res) => {
+  const auth0Id = req.auth.payload.sub;
+  // const auth0Id = "auth0|661201489fbd80a7b65838e5";
   const isAllowed = req.query.allow;
   if(!isAllowed){
     return res.status(400).send("allow query param is required");
@@ -231,13 +234,14 @@ app.get("/user/profile", requireAuth, async (req, res) => {
  */
 app.get("/user/isSubscribed", requireAuth, async (req, res) => {
 // app.get("/user/isSubscribed", async (req, res) => {
-  if(!req.query.latitude || !req.query.longitude){
-    return res.status(400).send("latitude and longitude query params are required");
-  }
   const auth0Id = req.auth.payload.sub;
   // const auth0Id = "auth0|661201489fbd80a7b65838e5";
   const latitude = +req.query.latitude;
   const longitude = +req.query.longitude;
+  if(isNaN(latitude) || isNaN(longitude)){
+    return res.status(400).send("Invalid latitude or longitude");
+  }
+  console.log("is Subscribed, ", auth0Id, req.url);
   console.log("latitude: ", latitude);
   console.log("longitude: ", longitude);
   
@@ -304,13 +308,13 @@ app.get("/weather/list", async (req, res) => {
  * return: weather object
  * This endpoint is used to get weather detail by latitude and longitude
  */
-// app.get("/weather/detail", requireAuth, async (req, res) => {
-app.get("/weather/detail", async (req, res) => {
-  if(!req.query.latitude || !req.query.longitude){
-    return res.status(400).send("latitude and longitude query params are required");
+app.get("/weather/detail", requireAuth, async (req, res) => {
+// app.get("/weather/detail", async (req, res) => {
+  const latitude = +req.query.latitude;
+  const longitude = +req.query.longitude;
+  if(isNaN(latitude) || isNaN(longitude)){
+    return res.status(400).send("Invalid latitude or longitude");
   }
-  const latitude = req.query.latitude;
-  const longitude = req.query.longitude;
   const unit = req.query.unit || "imperial";
   const weather = await getFullWeather(latitude, longitude, unit);
   console.log("🌦️ get weather detail by latitude and longitude: ");
@@ -323,8 +327,8 @@ app.get("/weather/detail", async (req, res) => {
  * return: weather object
  * This endpoint is used to get 48 hours' hourly weather detail by latitude and longitude
  */
-// app.get("/weather/detail/hourly", requireAuth, async (req, res) => {
-app.get("/weather/detail/hourly", async (req, res) => {
+app.get("/weather/detail/hourly", requireAuth, async (req, res) => {
+// app.get("/weather/detail/hourly", async (req, res) => {
   if(!req.query.latitude || !req.query.longitude){
     return res.status(400).send("latitude and longitude query params are required");
   }
@@ -341,8 +345,8 @@ app.get("/weather/detail/hourly", async (req, res) => {
  * return: weather object
  * This endpoint is used to get 8 days' daily weather detail by latitude and longitude
  */
-// app.get("/weather/detail/daily", requireAuth, async (req, res) => {
-app.get("/weather/detail/daily", async (req, res) => {
+app.get("/weather/detail/daily", requireAuth, async (req, res) => {
+// app.get("/weather/detail/daily", async (req, res) => {
   if(!req.query.latitude || !req.query.longitude){
     return res.status(400).send("latitude and longitude query params are required");
   }

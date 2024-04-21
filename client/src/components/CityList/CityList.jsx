@@ -6,10 +6,34 @@ import { UnitContext } from '../../UnitContext';
 
 export default function CityList() {
   const defaultCityList = [
-    {name:'New York'},
-    {name:'Emeryville'},
-    {name:'Oakland'},
-    {name:'Chicago'},
+    {
+      "name": "New York County",
+      "latitude": 40.7127281,
+      "longitude": -74.0060152,
+      "country": "US",
+      "state": "New York"
+    },
+    {
+      "name": "Emeryville",
+      "latitude": 37.8314089,
+      "longitude": -122.2865266,
+      "country": "US",
+      "state": "California"
+    },
+    {
+      "name": "Oakland",
+      "latitude": 37.8044557,
+      "longitude": -122.271356,
+      "country": "US",
+      "state": "California"
+    },
+    {
+      "name": "Chicago",
+      "latitude": 41.8755616,
+      "longitude": -87.6244212,
+      "country": "US",
+      "state": "Illinois"
+    },
   ]
   const [ cityList, setCityList ] = useState(defaultCityList);
   const [ weatherList, setWeatherList ] = useState(null);
@@ -71,7 +95,7 @@ export default function CityList() {
   },[unit, cityList]);
 
   return (
-    <div className='city-list-container'>
+    <div className='city-list-container' data-testid="home-cityList">
       {
         cityList && weatherList &&
         cityList.map((cur, index)=>{

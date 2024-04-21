@@ -9,7 +9,7 @@ export async function getLocationByCity(name) {
   const res = await fetch(
     `${process.env.OPENWEATHER_GEOCODING}?appid=${process.env.OPENWEATHER_API_KEY}&q=${name}`);
   const location = await res.json();
-  console.log("☀️ get location by city name: ", location);
+  // console.log("☀️ get location by city name: ");
   const city = {
     name: location[0].name,
     latitude: location[0].lat,
@@ -17,7 +17,7 @@ export async function getLocationByCity(name) {
     country: location[0].country,
     state: location[0].state,
   }
-  console.log("☀️ city geo:", city);
+  console.log("☀️ get location by city city geo:");
   return city;
 }
 // OPENWEATHER, get mutiple locations info by city name 
@@ -25,7 +25,7 @@ export async function getLocationsByCityName(name) {
   const res = await fetch(
     `${process.env.OPENWEATHER_GEOCODING}?appid=${process.env.OPENWEATHER_API_KEY}&q=${name}&limit=5`);
   const locations = await res.json();
-  console.log("☀️ get mutiple locations by city name: ", locations);
+  // console.log("☀️ search locations by city name: ");
   const cities = locations.map((location) => {
     return {
       name: location.name,
@@ -35,7 +35,7 @@ export async function getLocationsByCityName(name) {
       state: location.state,
     }
   });
-  console.log("☀️ cities geo:", cities);
+  console.log("☀️ getLocationsByCityName cities geo:", cities);
   return cities;
 }
 

@@ -22,6 +22,7 @@ export default function UserProfile() {
       label: 'Subscribed City List',
       children: (
         <List
+          data-testid="profile-subscribed-city-list"
           dataSource={cityList}
           renderItem={
             (item) => {
@@ -41,6 +42,7 @@ export default function UserProfile() {
       label: 'Settings',
       children: (
         <List
+          data-testid="profile-settings"
           dataSource={settings}
           renderItem={
             (item) => {
@@ -60,6 +62,7 @@ export default function UserProfile() {
       label: 'Auth Debugger',
       children: (
         <List
+          data-testid="profile-auth-debugger"
           dataSource={authDebugger}
           itemLayout="vertical"
           renderItem={
@@ -165,7 +168,7 @@ export default function UserProfile() {
         </Button>
         <h1>UserProfile</h1>
       </div>
-      <Card className='profile-content'>
+      <Card className='profile-content' data-testid="profile-content">
         <div className='profile-content-header'>
           <Avatar
             size={{
