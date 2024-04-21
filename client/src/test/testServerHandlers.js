@@ -8,6 +8,12 @@ export const handlers = [
     return res(ctx.json(false));
   }),
 
+  rest.post(url + "/user/addCity", (req, res, ctx) => {
+    return res(ctx.json({
+      "id": 1
+    }));
+  }),
+
   rest.get(url + "/user/profile", (req, res, ctx) => {
     return res(ctx.json({
       "id": 1,

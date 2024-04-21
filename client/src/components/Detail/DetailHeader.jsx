@@ -82,7 +82,7 @@ export default function DetailHeader({ city }) {
   return (
     <div className='detail-header' data-testid="detail-header">
       <p className='header-city'>{city?.name}, {city?.state}, {city?.country}</p>
-      <Button onClick={onSubscribe}>
+      <Button onClick={onSubscribe} data-testid="detail-header-button">
         {subscribed === true ? "Unsubscribe" : "Subscribe"}
       </Button>
     </div>

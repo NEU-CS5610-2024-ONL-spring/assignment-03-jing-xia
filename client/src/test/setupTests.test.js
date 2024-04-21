@@ -96,7 +96,10 @@ test("test if detail header could load city and subscribe status correctly", asy
       }}/>
     </AuthTokenProvider>)
   expect(screen.getByTestId("detail-header")).toHaveTextContent("Los Angeles, California, US");
-  expect(screen.getByTestId("detail-header")).toHaveTextContent("Subscribe");
+  const btn = screen.getByTestId("detail-header-button");
+  expect(btn).toHaveTextContent("Subscribe");
+  await fireEvent.click(screen.getByTestId("detail-header-button"));
+  await waitFor(() => expect(btn).toHaveTextContent("Unsubscribe"));
 });
 
 test("load profile page", async () => {
