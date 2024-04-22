@@ -12,4 +12,4 @@ Author: Jing Xia, Siyuan Liu
 - `npm start`
 
 ## Introductin video
-[Introduction of Weather Forecast App]()
+[Introduction of Weather Forecast App](https://youtu.be/k-8Argum76o)
