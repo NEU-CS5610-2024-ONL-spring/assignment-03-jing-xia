@@ -1,4 +1,4 @@
-# Weather forecast App
+# Weather Forecast App
 An app that tells weather information of current and future.  
 
 Author: Jing Xia, Siyuan Liu
