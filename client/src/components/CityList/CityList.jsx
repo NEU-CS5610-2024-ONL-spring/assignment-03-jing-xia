@@ -63,7 +63,12 @@ export default function CityList() {
       if(cityList === defaultCityList && weatherList){
         return;
       }
+      if(data.find((cur) => cur.cod === 429)){
+        console.log("API limit reached. Please try again later.")
+      }
       setWeatherList(data);
+    } else {
+      console.log(response.statusText);
     }
   }
 
@@ -80,6 +85,8 @@ export default function CityList() {
         cityList = defaultCityList;
       }
       setCityList(cityList);
+    } else {
+      console.log(response.statusText);
     }
   }
 
