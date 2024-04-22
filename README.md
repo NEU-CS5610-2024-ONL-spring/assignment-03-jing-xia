@@ -11,5 +11,5 @@ Author: Jing Xia, Siyuan Liu
 - `npm install`
 - `npm start`
 
-### Introductin video
+## Introductin video
 [Introduction of Weather Forecast App]()
