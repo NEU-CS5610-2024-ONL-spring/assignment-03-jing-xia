@@ -19,7 +19,6 @@ function AuthTokenProvider({ children }) {
             scope: requestedScopes.join(" "),
           },
         });
-        console.log("I tried");
         setAccessToken(token);
       } catch (err) {
         console.log(err);

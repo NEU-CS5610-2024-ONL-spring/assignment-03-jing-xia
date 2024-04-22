@@ -47,7 +47,6 @@ export default function Detail() {
 
   const [current, setCurrent] = useState('hourly');
   const onClick = (e) => {
-    console.log('click ', e);
     setCurrent(e.key);
   };
 

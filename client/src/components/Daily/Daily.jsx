@@ -34,7 +34,6 @@ export default function Daily() {
     if(response.ok){
       const data = await response.json();
       setDailyWeather(data);
-      console.log(data);
     } else {
       console.log(response.statusText);
     }
