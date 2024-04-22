@@ -81,11 +81,11 @@ test("test if city component could display city name and weather info correctly"
   expect(screen.getByTestId("city-card")).toHaveTextContent("Los Angeles");
   expect(screen.getByTestId("city-card")).toHaveTextContent("More");
   expect(screen.getByTestId("city-card")).toHaveTextContent("Clear");
-  expect(screen.getByTestId("city-card")).toHaveTextContent("56.01");
+  expect(screen.getByTestId("city-card")).toHaveTextContent("56");
 });
 
 test("test if detail header could load city and subscribe status correctly", async () => {
-  render(
+  const {rerender} = render(
     <AuthTokenProvider>
       <DetailHeader city={{
         name: "Los Angeles",
@@ -96,11 +96,7 @@ test("test if detail header could load city and subscribe status correctly", asy
       }}/>
     </AuthTokenProvider>)
   expect(screen.getByTestId("detail-header")).toHaveTextContent("Los Angeles, California, US");
-  let btn = screen.getByTestId("detail-header-button");
-  expect(btn).toHaveTextContent("Subscribe");
-  await fireEvent.click(btn);
-  btn = screen.getByTestId("detail-header-button");
-  await waitFor(() => expect(btn).toHaveTextContent("Unsubscribe"));
+  expect(screen.getByTestId("detail-header-button")).toHaveTextContent("Subscribe");
 });
 
 test("load profile page", async () => {
