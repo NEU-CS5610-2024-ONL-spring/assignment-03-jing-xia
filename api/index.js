@@ -20,7 +20,7 @@ const app = express();
 // app.use(cors());
 app.use(cors({ origin:'*' }));
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-0rigin', '*');
+  res.header('Access-Control-Allow-0rigin', '*');
   res.header('Access-Control-Allow-Headers','Origin, X-Requested-With, Content-Type, Accept');
   next();
 });
