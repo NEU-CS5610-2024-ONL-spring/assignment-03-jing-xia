@@ -19,6 +19,11 @@ const app = express();
 
 // app.use(cors());
 app.use(cors({ origin:'https://assignment-03-jing-xia.vercel.app' }));
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-0rigin', 'https://assignment-03-jing-xia.vercel.app");
+  res.header('Access-Control-Allow-Headers','Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(morgan("dev"));
