@@ -2,7 +2,7 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "homepage": "/home",
+  "homepage": "https://assignment-03-jing-xia.vercel.app",
   "dependencies": {
     "@ant-design/icons": "^5.3.6",
     "@auth0/auth0-react": "^2.2.3",
