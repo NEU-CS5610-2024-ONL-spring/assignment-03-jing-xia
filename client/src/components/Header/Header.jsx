@@ -39,8 +39,6 @@ export default function Header() {
   const search = async (newValue) => {
     const encodedCityName = encodeURIComponent(newValue);
     const fullUrl = `${process.env.REACT_APP_API_URL}/search?city=${encodedCityName}`;
-    //!!! url cannot contain space, need to modify it
-    console.log(fullUrl);
     const response = await fetch(fullUrl, {
       method: 'GET',
       headers:{
@@ -49,7 +47,6 @@ export default function Header() {
     });
     if(response.ok){
       const data = await response.json();
-      console.log(data);
       setData(data);
     }
   }

@@ -37,7 +37,6 @@ export default function Hourly() {
     if(response.ok){
       const data = await response.json();
       setHourlyWeather(data);
-      console.log("hourly weather: ", data);
     } else {
       console.log(response.statusText);
     }

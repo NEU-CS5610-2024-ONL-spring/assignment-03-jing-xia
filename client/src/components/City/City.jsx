@@ -32,7 +32,7 @@ export default function City({city, weather, unit}) {
       <div style={{fontSize:'20px'}}> 
         <div className='city-weather-header'>
           <img src={`https://openweathermap.org/img/wn/${weather?.current?.weather[0].icon}@2x.png`} alt="weather icon"/>
-          <span>{weather?.current?.weather[0].main}</span>
+          <span>{Math.round(weather?.current?.weather[0].main)}</span>
           <span>{weather?.current?.temp}{unit === "imperial" ? '℉' : '℃'}</span>
         </div>
         <div>
