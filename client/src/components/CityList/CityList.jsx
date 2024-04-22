@@ -3,6 +3,7 @@ import { useAuthToken } from "../../AuthTokenContext";
 import './CityList.css';
 import City from '../City/City';
 import { UnitContext } from '../../UnitContext';
+import { useAuth0 } from '@auth0/auth0-react';
 
 export default function CityList() {
   const defaultCityList = [
@@ -35,24 +36,19 @@ export default function CityList() {
       "state": "Illinois"
     },
   ]
-  const [ cityList, setCityList ] = useState(defaultCityList);
+  const [ cityList, setCityList ] = useState(null);
   const [ weatherList, setWeatherList ] = useState(null);
   const { accessToken } = useAuthToken();
+  const { isAuthenticated } = useAuth0();
   const [ unit, updateUnit ] = React.useContext(UnitContext);
 
   const getWeatherList = async() => {
-    let cityNameList;
-    if(cityList.length === 0){
-      // use default city list
-      cityNameList = defaultCityList.map((cur) => {
-        return cur.name;
-      })
+    if(!cityList){
+      return;
     }
-    else{
-      cityNameList = cityList.map((cur) => {
-        return cur.name;
-      })
-    }
+    const cityNameList = cityList.map((cur) => {
+      return cur.name;
+    })
     const encodedCityName = encodeURIComponent(cityNameList);
     const encodedUnit = encodeURIComponent(unit);
     const fullUrl = `${process.env.REACT_APP_API_URL}/weather/list?cities=${encodedCityName}&unit=${encodedUnit}`;
@@ -64,7 +60,9 @@ export default function CityList() {
     });
     if(response.ok){
       const data = await response.json();
-      console.log(data);
+      if(cityList === defaultCityList && weatherList){
+        return;
+      }
       setWeatherList(data);
     }
   }
@@ -78,7 +76,6 @@ export default function CityList() {
     });
     if(response.ok){
       let cityList = await response.json();
-      console.log("Subscribed city list:", cityList);
       if(cityList.length === 0){
         cityList = defaultCityList;
       }
@@ -87,7 +84,12 @@ export default function CityList() {
   }
 
   useEffect(()=>{
-    getSubscribedCityList();
+    if(isAuthenticated && accessToken){
+      getSubscribedCityList();
+    }
+    else{
+      setCityList(defaultCityList);
+    }
   },[accessToken]);
 
   useEffect(()=>{
