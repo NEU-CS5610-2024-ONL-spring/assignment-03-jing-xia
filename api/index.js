@@ -281,26 +281,9 @@ app.get("/weather/list", async (req, res) => {
   const cityNames = req.query.cities.split(",");
   const unit = req.query.unit || "imperial";
   const weathers = await getWeatherByCities(cityNames, unit);
-  console.log("🌦️ get weathers by city names: ");
+  console.log("🌦️ get weathers by city names: ", weathers);
   res.json(weathers);
 });
-
-/**
- * url:     /weather/detail?city_name=New York&unit=imperial
- * params:  city_name, unit
- */
-//app.get("/weather/detail", requireAuth, async (req, res) => {
-// app.get("/weather/detail", async (req, res) => {
-//   const cityName = req.query.city_name;
-//   if (!cityName) {
-//     res.status(400).send("city_name query param is required");
-//   } else {
-//     const unit = req.query.unit || "imperial";
-//     const weather = await getWeatherByCities([cityName], unit);
-//     console.log("🌦️ get weather detail by city name: ");
-//     res.json(weather);
-//   }
-// });
 
 /**
  * url: /weather/detail?latitude=1&longitude=1&unit=imperial
@@ -335,6 +318,9 @@ app.get("/weather/detail/hourly", requireAuth, async (req, res) => {
   const { latitude, longitude } = req.query;
   const unit = req.query.unit || "imperial";
   const weather = await getHourlyForecast(latitude, longitude, unit);
+  if(weather.cod === 429){
+    return res.status(429).send("Too many requests");
+  }
   console.log("🌦️ get hourly weather detail by latitude and longitude: ");
   res.json(weather);
 });
@@ -353,6 +339,9 @@ app.get("/weather/detail/daily", requireAuth, async (req, res) => {
   const { latitude, longitude } = req.query;
   const unit = req.query.unit || "imperial";
   const weather = await getDailyForecast(latitude, longitude, unit);
+  if(weather.cod === 429){
+    return res.status(429).send("Too many requests");
+  }
   console.log("🌦️ get daily weather detail by latitude and longitude: ");
   res.json(weather);
 });

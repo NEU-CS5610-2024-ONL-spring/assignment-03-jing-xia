@@ -23,7 +23,7 @@ export default function Daily() {
 
   const getDailyWeather = async() => {
     const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/weather/detail/daily?latitude=${city.latitude}&longitude=${city.longitude}&unit=${unit}`,
+      `${process.env.REACT_APP_API_URL}/weather/detail/daily?latitude=${city?.latitude}&longitude=${city?.longitude}&unit=${unit}`,
       {
         method: "GET",
         headers: {
@@ -35,6 +35,8 @@ export default function Daily() {
       const data = await response.json();
       setDailyWeather(data);
       console.log(data);
+    } else {
+      console.log(response.statusText);
     }
   };
 
@@ -42,7 +44,7 @@ export default function Daily() {
     const timezone = weathers.timezone;
     return (
       <div className='weather-list'>
-        {weathers.daily.map((weather, index) => {
+        {weathers.daily?.map((weather, index) => {
           // const dt = new Date((new Date(weather.dt * 1000)).toLocaleString('en-US', {"timeZone": timezone}));
           const dt = new Date(weather.dt * 1000);
           const options = {
@@ -67,7 +69,7 @@ export default function Daily() {
                 </div>
                 <div className='weather-item-info-2'>
                   <div className='weather-item-precipitation'>
-                  <img src={getRainIcon()} alt={`Precipitation icon`}/>
+                  <img src={process.env.REACT_APP_API_RAIN_ICON_URL} alt={`Precipitation icon`}/>
                       {weather.pop === 0 ? "0%" : "100%"}</div>
                   <div className='weather-item-wind'>
                     {direction} - {Math.round(weather.wind_speed)} {unit === "imperial" ? "mph" : "m/s"}
