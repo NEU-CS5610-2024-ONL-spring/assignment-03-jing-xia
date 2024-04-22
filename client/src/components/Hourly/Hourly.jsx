@@ -7,6 +7,7 @@ import { UnitContext } from '../../UnitContext';
 
 export default function Hourly() {
   
+  
   const { accessToken } = useAuthToken();
   const [ unit, updateUnit ] = React.useContext(UnitContext);
   const location = useLocation();
@@ -25,7 +26,7 @@ export default function Hourly() {
 
   const getHourlyWeather = async() => {
     const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/weather/detail/hourly?latitude=${city.latitude}&longitude=${city.longitude}&unit=${unit}`,
+      `${process.env.REACT_APP_API_URL}/weather/detail/hourly?latitude=${city?.latitude}&longitude=${city?.longitude}&unit=${unit}`,
       {
         method: "GET",
         headers: {
@@ -36,7 +37,9 @@ export default function Hourly() {
     if(response.ok){
       const data = await response.json();
       setHourlyWeather(data);
-      // console.log(data);
+      console.log("hourly weather: ", data);
+    } else {
+      console.log(response.statusText);
     }
   };
 
@@ -78,7 +81,7 @@ export default function Hourly() {
                   </div>
                   <div className='hourly-item-info-2'>
                     <div className='hourly-item-precipitation'>
-                      <img src={getRainIcon()} alt={`Precipitation icon`}/>
+                      <img src={process.env.REACT_APP_API_RAIN_ICON_URL} alt={`Precipitation icon`}/>
                       {weather.pop === 0 ? "0%" : "100%"}</div>
                     <div className='hourly-item-wind'>
                       {direction} - {Math.round(weather.wind_speed)} {unit === "imperial" ? "mph" : "m/s"}</div>

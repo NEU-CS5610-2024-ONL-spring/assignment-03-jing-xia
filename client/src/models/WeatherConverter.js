@@ -8,11 +8,3 @@ export function windDirConvert(degrees){
   ];
   return compass[(dir % 16)];
 }
-
-export function iconUrlConvert(icon){
-  return `${process.env.REACT_APP_API_ICON_URL}${icon}@2x.png`;
-  // return `https://openweathermap.org/img/wn/${icon}@2x.png`;
-}
-export function getRainIcon(){
-  return "https://openweathermap.org/img/wn/09d@2x.png";
-}
