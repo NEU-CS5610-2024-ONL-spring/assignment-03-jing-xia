@@ -1,0 +1,155 @@
+.header-title {
+  font-size: 1.5rem;
+  /* font-weight: 400; */
+}
+.header-time {
+  font-size: 1.1rem;
+}
+.weather-list {
+
+}
+.weather-item {
+  display: grid;
+  justify-content: space-between;
+  /* grid-template-columns: 1fr 3fr 4fr 3fr 3fr; */
+  grid-template-columns: 1fr 13fr;
+  /* justify-content: center; */
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid lightgrey;
+  font-size: large;
+}
+.hourly-item-weather-info {
+  display: grid;
+  grid-template-columns: 7fr 6fr;
+  align-items: center;
+}
+.hourly-item-info-1 {
+  display: grid;
+  grid-template-columns: 3fr 4fr;
+  align-items: center;
+}
+.hourly-item-info-2 {
+  display: grid;
+  grid-template-columns: 3fr 3fr;
+  align-items: center;
+}
+.hourly-day {
+  text-align: start;
+  font: 1.5em sans-serif, bold;
+  margin-bottom: 5px;
+  margin-top: 10px;
+}
+.hourly-item-description {
+  display: flex;
+  text-align: start;
+  align-items: center;
+}
+.hourly-item-precipitation {
+  display: flex;
+  text-align: start;
+  align-items: center;
+}
+.hourly-item-wind {
+  text-align: start;
+}
+/* Link {
+  font-size: 1rem;
+} */
+img {
+  width: 50px;
+  height: 50px;
+  margin-right: 3px;
+}
+@media (max-width: 850px) and (min-width: 600px) {
+  .weather-item {
+    display: grid;
+    grid-template-columns: 1fr 13fr;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid lightgrey;
+    font-size: medium;
+  }
+  .hourly-item-weather-info {
+    grid-template-columns: 7fr 6fr;
+    align-items: center;
+    justify-content: center;
+  }
+  .hourly-item-info-1 {
+    grid: auto-flow dense / 70%;
+    align-items: center;
+    justify-content: center;
+  }
+  .hourly-item-info-2 {
+    grid: auto-flow dense / 70%;
+    align-items: center;
+    justify-content: center;
+  }
+  .hourly-item-description {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+  }
+  .hourly-item-precipitation {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+  }
+  .hourly-item-wind {
+    text-align: center;
+  }
+  img {
+    width: 30px;
+    height: 30px;
+    margin-right: 3px;
+  }
+}
+@media (max-width: 600px) {
+  .weather-item {
+    display: grid;
+    grid-template-columns: 1fr 13fr;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid lightgrey;
+    font-size: medium;
+  }
+  .hourly-item-weather-info {
+    grid: auto-flow dense / 70%;
+    align-items: center;
+    justify-content: center;
+  }
+  .hourly-item-info-1 {
+    grid: auto-flow dense / 100%;
+    align-items: center;
+    justify-content: center;
+  }
+  .hourly-item-info-2 {
+    grid: auto-flow dense / 100%;
+    align-items: center;
+    justify-content: center;
+  }
+  .hourly-item-description {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+  }
+  .hourly-item-precipitation {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+  }
+  .hourly-item-wind {
+    text-align: center;
+  }
+  img {
+    width: 30px;
+    height: 30px;
+    margin-right: 3px;
+  }
+}

@@ -1,0 +1,18 @@
+*{
+  margin: 0;
+  text-align: center;
+}
+.home{
+  min-height: 100vh;
+  background: linear-gradient(rgb(56, 130, 186), rgb(176, 205, 224));
+}
+.main{
+  min-height: 80vh;
+  width: 100vw;
+}
+.footer {
+  min-height: 10vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

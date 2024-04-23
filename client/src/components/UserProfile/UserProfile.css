@@ -1,0 +1,59 @@
+.profile-container {
+  background: linear-gradient(rgb(56, 130, 186), rgb(176, 205, 224));
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.profile-header {
+  background-color: rgb(19, 57, 85);
+  color: white;
+  height: 10vh;
+  display: grid;
+  grid-template-columns: 3fr 4fr 3fr;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-header button {
+  justify-self: center;
+}
+
+/* a hidden psudo element to take up the spaces of 3fr*/
+.profile-header::after {
+  content: "";
+  visibility: hidden;
+}
+
+.profile-content {
+  width: 60%;
+  margin: 20px auto;
+  min-height: 80vh;
+}
+
+.profile-content-header {
+  margin-bottom: 20px;
+}
+
+.debugger-title{
+  text-align: start;
+}
+
+.debugger-content{
+  /* width: 100%; */
+  text-align: start;
+  text-wrap: wrap;
+  scroll-behavior: auto;
+  word-wrap: break-word;
+}
+@media (max-width: 700px) {
+  .profile-content {
+    width: 80%;
+  }
+  h1 {
+    font-size: large;
+    word-wrap: break-word;
+  }
+  p {
+    word-wrap: break-word;
+  }
+}
